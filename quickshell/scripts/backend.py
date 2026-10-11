@@ -137,14 +137,24 @@ def read_displays(monitors=None):
 
 
 def media():
-    raw=run(['playerctl','metadata','--format','{{title}}\n{{artist}}\n{{album}}\n{{mpris:artUrl}}\n{{mpris:length}}\n{{playerName}}'])
-    p=raw.split('\n')
-    if len(p)<6:return {}
-    try:length=int(p[4])/1000000
-    except ValueError:length=0
-    try:position=float(run(['playerctl','position']))
-    except ValueError:position=0
-    return dict(title=p[0],artist=p[1],album=p[2],art=p[3],length=length,player=p[5],position=position,playing=run(['playerctl','status'])=='Playing')
+    players=[]
+    # Keep the complete MPRIS instance name: two browser windows can expose
+    # different players with the same friendly name.
+    for identity in dict.fromkeys(run(['playerctl','--list-all']).splitlines()):
+        args=['playerctl','--player',identity]
+        raw=run(args+['metadata','--format','{{title}}\n{{artist}}\n{{album}}\n{{mpris:artUrl}}\n{{mpris:length}}\n{{playerName}}'])
+        p=raw.split('\n')
+        if len(p)<6:continue
+        try:length=int(p[4])/1000000
+        except ValueError:length=0
+        try:position=float(run(args+['position']))
+        except ValueError:position=0
+        status=run(args+['status'])
+        if status not in ('Playing','Paused'):continue
+        players.append(dict(id=identity,title=p[0],artist=p[1],album=p[2],art=p[3],length=length,player=p[5],position=position,playing=status=='Playing'))
+    if not players:return {}
+    current=next((p for p in players if p['playing']),players[0])
+    return dict(current,players=players)
 
 
 def desktop():
@@ -519,8 +529,8 @@ class Backend:
             if v:self.night=subprocess.Popen(['hyprsunset','-t',str(int(extra or 3700))],stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL)
             self.emit({'nightActive':bool(v)})
         elif a=='media':
-            if v in ('play-pause','next','previous'):run(['playerctl',v],check=True)
-        elif a=='seek':run(['playerctl','position',str(float(v))],check=True)
+            if v in ('play-pause','next','previous'):run(['playerctl']+(['--player',str(extra)] if extra else [])+[v],check=True)
+        elif a=='seek':run(['playerctl']+(['--player',str(extra)] if extra else [])+['position',str(float(v))],check=True)
         elif a=='wallpaper':
             self.emit({'wallpaperSelected':set_wallpaper(v)})
             if self.settings['theme']=='material-you':self.command({'action':'setting','value':'theme','extra':'material-you','preserveWallpaper':True})
