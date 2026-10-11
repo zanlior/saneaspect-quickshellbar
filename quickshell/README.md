@@ -1,6 +1,6 @@
 # Island — Quickshell for CachyOS / Hyprland
 
-A native QML recreation of the black-and-mint dynamic island shown in the supplied saneAspect screenshots. This is an independent implementation, not the creator's original configuration. The wallpaper and album artwork in the reference are not bundled.
+A dynamic desktop bar built with Quickshell and QML, inspired by the saneAspect desktop design. Island offers Dock and Notch layouts with expandable media, system, calendar and prayer panels. Wallpapers and album artwork come from your own files and media players.
 
 ## Start
 
@@ -125,13 +125,11 @@ QT_QPA_PLATFORM=offscreen dbus-run-session -- quickshell -p Preview.qml
 
 `Preview.qml` contains clearly separated sample data, sends no system commands, and renders 22 views, including the settings sections, into `/tmp/island-preview-*.png`. The actual `shell.qml` uses live services.
 
-Publication verification includes the Python suite and offscreen QML interaction checks. See [publication checks](../PUBLICATION-CHECKS.md) for the current results and limits. Display command syntax follows Hyprland’s [Lua API](https://wiki.hypr.land/Configuring/Advanced-and-Cool/Using-hyprctl/); brightness uses the [DDC VCP format](https://www.ddcutil.com/command_getvcp/).
+Display command syntax follows Hyprland’s [Lua API](https://wiki.hypr.land/Configuring/Advanced-and-Cool/Using-hyprctl/); brightness uses the [DDC VCP format](https://www.ddcutil.com/command_getvcp/).
 
 Fonts can be changed in Settings → Appearance. Both the Display card and its monitor details control hardware brightness on the focused external monitor. DDC/CI writes run in the background and retain the latest slider position. Monitor sliders keep their identity during polls, and late intermediate readings do not interrupt dragging. Hardware brightness depends on a monitor with DDC/CI support.
 
-## Editor integrations
-
-Personal editor configuration snapshots are excluded from this release. The bar and desktop theme palettes remain included.
+## Appearance and bar styles
 
 When the status circle is disabled, control and connection panels expand from the centered clock. When the album circle is disabled, the music panel expands from the clock. Settings can be closed with Super+C and reopened with Super+comma.
 
@@ -149,8 +147,7 @@ Dhuhr, Asr, Maghrib, and Isha with dawn, sun, afternoon, sunset, and moon icons.
 An additional sixth orbit card labeled "Passed" shows the most recent prayer's
 name, scheduled time, and elapsed time. Before Fajr, it shows yesterday's Isha.
 The next prayer is highlighted, and its name, time and countdown appear on the
-right. The Hijri date uses a crescent-and-mosque vector matching the supplied
-reference.
+right. The Hijri date uses a crescent-and-mosque vector.
 
 Prayer API and location start unconfigured. Follow [Prayer API and location setup](PRAYER-SETUP.md) to replace the endpoint and enter your city, country, calculation method and audio folders.
 See [AlAdhan's calculation methods](https://aladhan.com/calculation-methods).
@@ -164,7 +161,6 @@ instead of presenting an old timetable. On connection failure, the service
 retries each minute and uses any valid saved timetable.
 
 The live prayer panel uses your configured API data and the current time.
-Captured personal timetables and prayer preview snapshots are not bundled.
 
 Prayer reminders are enabled by default: a notification appears 15 minutes
 before, 5 minutes before, and at each of the five prayer times. Prayer
