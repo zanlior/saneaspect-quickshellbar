@@ -1,0 +1,422 @@
+{
+  "ariadne": {
+    "colors": [
+      "#000000",
+      "#191715",
+      "#272320",
+      "#ede1cb",
+      "#989187",
+      "#3dccac"
+    ],
+    "samples": [
+      "#ff6952",
+      "#7dd4a6",
+      "#f6d264",
+      "#68c7d4",
+      "#e49daf",
+      "#3dccac"
+    ],
+    "gtk": "Island-ariadne",
+    "source": "ariadne"
+  },
+  "catppuccin": {
+    "colors": [
+      "#11111b",
+      "#181825",
+      "#313244",
+      "#cdd6f4",
+      "#a6adc8",
+      "#cba6f7"
+    ],
+    "samples": [
+      "#f38ba8",
+      "#a6e3a1",
+      "#f9e2af",
+      "#89b4fa",
+      "#cba6f7",
+      "#94e2d5"
+    ],
+    "gtk": "Island-catppuccin",
+    "source": "catppuccin"
+  },
+  "e-ink": {
+    "colors": [
+      "#eeeeec",
+      "#dededb",
+      "#ccccca",
+      "#222222",
+      "#666666",
+      "#555555"
+    ],
+    "samples": [
+      "#444444",
+      "#555555",
+      "#666666",
+      "#777777",
+      "#888888",
+      "#999999"
+    ],
+    "gtk": "Island-e-ink",
+    "source": "e-ink"
+  },
+  "everblush": {
+    "colors": [
+      "#141b1e",
+      "#1c2529",
+      "#29363c",
+      "#dadada",
+      "#a0a0a0",
+      "#8ccf7e"
+    ],
+    "samples": [
+      "#e57474",
+      "#8ccf7e",
+      "#e5c76b",
+      "#67b0e8",
+      "#c47fd5",
+      "#6cbfbf"
+    ],
+    "gtk": "Island-everblush",
+    "source": "everblush"
+  },
+  "everforest": {
+    "colors": [
+      "#272e33",
+      "#2e383c",
+      "#414b50",
+      "#d3c6aa",
+      "#9da9a0",
+      "#a7c080"
+    ],
+    "samples": [
+      "#e67e80",
+      "#a7c080",
+      "#dbbc7f",
+      "#7fbbb3",
+      "#d699b6",
+      "#83c092"
+    ],
+    "gtk": "Island-everforest",
+    "source": "everforest"
+  },
+  "gruvbox": {
+    "colors": [
+      "#1d2021",
+      "#282828",
+      "#3c3836",
+      "#ebdbb2",
+      "#a89984",
+      "#b8bb26"
+    ],
+    "samples": [
+      "#fb4934",
+      "#b8bb26",
+      "#fabd2f",
+      "#83a598",
+      "#d3869b",
+      "#8ec07c"
+    ],
+    "gtk": "Island-gruvbox",
+    "source": "gruvbox"
+  },
+  "gruvbox-material": {
+    "colors": [
+      "#141617",
+      "#1d2021",
+      "#32302f",
+      "#d4be98",
+      "#a89984",
+      "#a9b665"
+    ],
+    "samples": [
+      "#ea6962",
+      "#a9b665",
+      "#d8a657",
+      "#7daea3",
+      "#d3869b",
+      "#89b482"
+    ],
+    "gtk": "Island-gruvbox-material",
+    "source": "gruvbox-material"
+  },
+  "horizon": {
+    "colors": [
+      "#16161c",
+      "#1c1e26",
+      "#2e303e",
+      "#e0dfe4",
+      "#9da0af",
+      "#25b0bc"
+    ],
+    "samples": [
+      "#e95678",
+      "#29d398",
+      "#fab795",
+      "#26bbd9",
+      "#ee64ac",
+      "#59e1e3"
+    ],
+    "gtk": "Island-horizon",
+    "source": "horizon"
+  },
+  "anime": {
+    "colors": [
+      "#101018",
+      "#171723",
+      "#292938",
+      "#ddd8ef",
+      "#9690ab",
+      "#b59bde"
+    ],
+    "samples": [
+      "#b56280",
+      "#789856",
+      "#b59462",
+      "#6b82b8",
+      "#a386c2",
+      "#81b4ad"
+    ],
+    "gtk": "Island-anime",
+    "source": "anime"
+  },
+  "nord": {
+    "colors": [
+      "#242933",
+      "#2e3440",
+      "#3b4252",
+      "#eceff4",
+      "#a8b1c2",
+      "#88c0d0"
+    ],
+    "samples": [
+      "#bf616a",
+      "#a3be8c",
+      "#ebcb8b",
+      "#81a1c1",
+      "#b48ead",
+      "#8fbcbb"
+    ],
+    "gtk": "Island-nord",
+    "source": "nord"
+  },
+  "tokyo-night": {
+    "colors": [
+      "#15161e",
+      "#1a1b26",
+      "#292e42",
+      "#c0caf5",
+      "#9aa5ce",
+      "#7aa2f7"
+    ],
+    "samples": [
+      "#f7768e",
+      "#9ece6a",
+      "#e0af68",
+      "#7aa2f7",
+      "#bb9af7",
+      "#7dcfff"
+    ],
+    "gtk": "Island-tokyo-night",
+    "source": "tokyonight"
+  },
+  "rose-pine": {
+    "colors": [
+      "#191724",
+      "#1f1d2e",
+      "#26233a",
+      "#e0def4",
+      "#908caa",
+      "#ebbcba"
+    ],
+    "samples": [
+      "#eb6f92",
+      "#9ccfd8",
+      "#f6c177",
+      "#31748f",
+      "#c4a7e7",
+      "#ebbcba"
+    ],
+    "gtk": "Island-rose-pine",
+    "source": "rose-pine"
+  },
+  "dracula": {
+    "colors": [
+      "#191a21",
+      "#282a36",
+      "#44475a",
+      "#f8f8f2",
+      "#a5a7b8",
+      "#bd93f9"
+    ],
+    "samples": [
+      "#ff5555",
+      "#50fa7b",
+      "#f1fa8c",
+      "#8be9fd",
+      "#bd93f9",
+      "#ff79c6"
+    ],
+    "gtk": "Island-dracula",
+    "source": "dracula"
+  },
+  "solarized": {
+    "colors": [
+      "#002b36",
+      "#073642",
+      "#164552",
+      "#eee8d5",
+      "#93a1a1",
+      "#2aa198"
+    ],
+    "samples": [
+      "#dc322f",
+      "#859900",
+      "#b58900",
+      "#268bd2",
+      "#d33682",
+      "#2aa198"
+    ],
+    "gtk": "Island-solarized",
+    "source": "solarized"
+  },
+  "kanagawa": {
+    "colors": [
+      "#16161d",
+      "#1f1f28",
+      "#2a2a37",
+      "#dcd7ba",
+      "#9c9889",
+      "#7e9cd8"
+    ],
+    "samples": [
+      "#c34043",
+      "#76946a",
+      "#c0a36e",
+      "#7e9cd8",
+      "#957fb8",
+      "#6a9589"
+    ],
+    "gtk": "Island-kanagawa",
+    "source": "kanagawa"
+  },
+  "oxocarbon": {
+    "colors": [
+      "#080808",
+      "#161616",
+      "#262626",
+      "#f2f4f8",
+      "#a2a9b0",
+      "#3ddbd9"
+    ],
+    "samples": [
+      "#ee5396",
+      "#42be65",
+      "#ffe97b",
+      "#33b1ff",
+      "#be95ff",
+      "#3ddbd9"
+    ],
+    "gtk": "Island-oxocarbon",
+    "source": "oxocarbon"
+  },
+  "monochrome": {
+    "colors": [
+      "#000000",
+      "#171717",
+      "#292929",
+      "#eeeeee",
+      "#999999",
+      "#dddddd"
+    ],
+    "samples": [
+      "#555555",
+      "#777777",
+      "#999999",
+      "#bbbbbb",
+      "#dddddd",
+      "#eeeeee"
+    ],
+    "gtk": "Island-monochrome",
+    "source": "monochrome"
+  },
+  "industrial": {
+    "colors": [
+      "#101010",
+      "#1c1c1c",
+      "#303030",
+      "#e6e3db",
+      "#98958c",
+      "#e0ac69"
+    ],
+    "samples": [
+      "#cf6a5c",
+      "#8ca77a",
+      "#e0ac69",
+      "#789dab",
+      "#a08da5",
+      "#8fa9a2"
+    ],
+    "gtk": "Island-industrial",
+    "source": "industrial"
+  },
+  "ocean": {
+    "colors": [
+      "#061820",
+      "#102630",
+      "#203d48",
+      "#d3ecee",
+      "#8cacb3",
+      "#66d9c1"
+    ],
+    "samples": [
+      "#df7e8b",
+      "#8bc5aa",
+      "#d9c889",
+      "#79accb",
+      "#a69acb",
+      "#66d9c1"
+    ],
+    "gtk": "Island-ocean",
+    "source": "ocean"
+  },
+  "rxyhn": {
+    "colors": [
+      "#061115",
+      "#131e22",
+      "#313c40",
+      "#d9d7d6",
+      "#909c9f",
+      "#7acfe4"
+    ],
+    "samples": [
+      "#df5b61",
+      "#8cd7aa",
+      "#ecd28b",
+      "#6791c9",
+      "#c488ec",
+      "#7acfe4"
+    ],
+    "gtk": "Island-rxyhn",
+    "source": "rxyhn"
+  },
+  "material-you": {
+    "colors": [
+      "#000000",
+      "#191715",
+      "#272320",
+      "#ede1cb",
+      "#989187",
+      "#3dccac"
+    ],
+    "samples": [
+      "#ff6952",
+      "#7dd4a6",
+      "#f6d264",
+      "#68c7d4",
+      "#e49daf",
+      "#3dccac"
+    ],
+    "gtk": "Island-material-you",
+    "source": "material-you"
+  }
+}

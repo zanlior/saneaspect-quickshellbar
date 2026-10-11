@@ -1,0 +1,58 @@
+// Gruvbox Theme Color Palette
+// Red
+$red-light: #ea6962;
+$red-dark: #cc241d;
+// Pink
+$pink-light: #d3869b;
+$pink-dark: #b16286;
+// Purple
+$purple-light: #d3869b;
+$purple-dark: #b16286;
+// Blue
+$blue-light: #7daea3;
+$blue-dark: #689d6a;
+// Teal (aqua) - Gruvbox signature aqua
+$teal-light: #8ec07c;
+$teal-dark: #79b8c9;
+// Green
+$green-light: #a9b665;
+$green-dark: #98971a;
+// Yellow
+$yellow-light: #d8a657;
+$yellow-dark: #d79921;
+// Orange
+$orange-light: #e78a4e;
+$orange-dark: #d65d0e;
+// Grey (Dark progression: 900=bg0 darkest, 050=brightest text)
+$grey-050: #fbf1c7;
+$grey-100: #f9f5d7;
+$grey-150: #ebdbb2;
+$grey-200: #d5c4a1;
+$grey-250: #bdae93;
+$grey-300: #a89984;
+$grey-350: #928374;
+$grey-400: #7c6f64;
+$grey-450: #665c54;
+$grey-500: #504945;
+$grey-550: #3c3836;
+$grey-600: #32302f;
+$grey-650: #282828;
+$grey-700: #242220;
+$grey-750: #1d2021;
+$grey-800: #1b1b1b;
+$grey-850: #161616;
+$grey-900: #121110;
+$grey-950: #0d0907;
+// White (text color for dark theme)
+$white: #fbf1c7;
+// Black (background color)
+$black: #1d2021;
+// Button (using gruvbox semantic colors)
+$button-close: if($variant == 'light', #ea6962, #cc241d);
+$button-max: if($variant == 'light', #a9b665, #98971a);
+$button-min: if($variant == 'light', #d8a657, #d79921);
+// Link
+$links: $teal-light;
+// Theme
+$default-light: $yellow-light;  // Warm yellow for gruvbox identity
+$default-dark: $orange-dark;    // Deep orange for dark variant

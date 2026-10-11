@@ -1,0 +1,71 @@
+// Rxyhn Theme Color Palette
+// Red
+$red-light: #DF5B61;
+$red-dark: #c54b51;
+
+// Pink
+$pink-light: #EE6A70;
+$pink-dark: #F16269;
+
+// Purple
+$purple-light: #C488EC;
+$purple-dark: #BC83E3;
+
+// Blue
+$blue-light: #6791C9;
+$blue-dark: #5A84BC;
+
+// Teal (aqua) - Rxyhn signature
+$teal-light: #7ACFE4;
+$teal-dark: #67AFC1;
+
+// Green
+$green-light: #8CD7AA;
+$green-dark: #78B892;
+
+// Yellow
+$yellow-light: #ecd28b;
+$yellow-dark: #f6dc95;
+
+// Orange
+$orange-light: #E89982;
+$orange-dark: #E9967E;
+
+// Grey (Dark progression: 900=bg0 darkest, 050=brightest text)
+$grey-050: #D9D7D6;
+$grey-100: #a0a8a8;
+$grey-150: #8A9499;
+$grey-200: #5c6666;
+$grey-250: #4f5a5e;
+$grey-300: #3b464a;
+$grey-350: #313c40;
+$grey-400: #1c272b;
+$grey-450: #131e22;
+$grey-500: #0d181c;
+$grey-550: #061115;
+$grey-600: #050f12;
+$grey-650: #040c0e;
+$grey-700: #03090b;
+$grey-750: #020608;
+$grey-800: #010405;
+$grey-850: #010203;
+$grey-900: #061115;
+$grey-950: #020203;
+
+// White (text color for dark theme)
+$white: #D9D7D6;
+
+// Black (background color)
+$black: #061115;
+
+// Button (dark variant - using rxyhn colors)
+$button-close: if($variant == 'light', #DF5B61, #DF5B61);
+$button-max: if($variant == 'light', #8CD7AA, #8CD7AA);
+$button-min: if($variant == 'light', #ecd28b, #ecd28b);
+
+// Link
+$links: #7ACFE4;
+
+// Theme
+$default-light: $teal-light;   // Teal for rxyhn identity
+$default-dark: $teal-dark;     // Dark teal

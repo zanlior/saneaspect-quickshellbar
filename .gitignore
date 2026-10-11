@@ -1,0 +1,18 @@
+# Runtime settings, snapshots and local development state
+**/__pycache__/
+*.pyc
+**/.git/
+**/.agents/
+**/.aws/
+**/.codex/
+.vscode/
+**/backups/
+**/migration/
+*.before-*
+*.log
+.env
+.env.*
+!*.example
+
+# Local publication review metadata (never distributed)
+.publication/

@@ -1,0 +1,63 @@
+// Catppuccin Mocha Color Palette (True Dark)
+
+// Accents (Bright pastels for dark backgrounds)
+$red-light: #f38ba8;     // Mocha Red
+$red-dark: #eba0ac;      // Mocha Maroon (darker/desaturated red-pink)
+
+$pink-light: #f5c2e7;    // Mocha Pink
+$pink-dark: #f2cdcd;     // Mocha Flamingo (muted pink)
+
+$purple-light: #cba6f7;  // Mocha Mauve (your Waybar purple)
+$purple-dark: #b4befe;   // Mocha Lavender (deeper blue-purple)
+
+$blue-light: #89b4fa;    // Mocha Blue
+$blue-dark: #74c7ec;     // Mocha Sapphire (darker cyan-blue)
+
+$teal-light: #94e2d5;    // Mocha Teal
+$teal-dark: #89dceb;     // Mocha Sky (slightly darker)
+
+$green-light: #a6e3a1;   // Mocha Green
+$green-dark: #81c8be;    // Not in Mocha - use darker mix or Teal
+
+$yellow-light: #f9e2af;  // Mocha Yellow
+$yellow-dark: #fab387;   // Mocha Peach (orange-yellow)
+
+$orange-light: #fab387;  // Mocha Peach
+$orange-dark: #fe640b;   // Not in Mocha - use deeper orange or Mauve
+
+// TRUE DARK Greys (Mocha surface colors)
+$grey-050: #cdd6f4;      // Text (white-ish)
+$grey-100: #bac2de;      // Subtext1
+$grey-150: #a6adc8;      // Subtext0
+$grey-200: #9399b2;      // Overlay2 (bright icons)
+$grey-250: #7f849c;      // Overlay1
+$grey-300: #6c7086;      // Overlay0 (muted icons)
+$grey-350: #585b70;      // Surface2 (hover states)
+$grey-400: #45475a;      // Surface1 (inactive tabs)
+$grey-450: #313244;      // Surface0 (borders, subtle bg)
+$grey-500: #28283d;      // Between Surface0 and Base
+$grey-550: #1e1e2e;      // **BASE** (your Waybar bg)
+$grey-600: #1a1a2b;      // Darkened Base
+$grey-650: #181825;      // **MANTLE** (darker panels)
+$grey-700: #151520;      // Deep Mantle
+$grey-750: #11111b;      // **CRUST** (pure black-ish)
+$grey-800: #0e0e16;      // Deeper Crust
+$grey-850: #0b0b12;      // OLED deep
+$grey-900: #08080c;      // OLED deeper
+$grey-950: #050508;      // Pitch black
+
+// Core
+$white: #cdd6f4;         // Text color (not pure white)
+$black: #11111b;         // Crust
+
+// Buttons (Dark theme logic: use bright variants on dark bg)
+$button-close: if($variant == 'light', $red-dark, $red-light);
+$button-max: if($variant == 'light', $green-dark, $green-light);
+$button-min: if($variant == 'light', $yellow-dark, $yellow-light);
+
+// Links
+$links: if($variant == 'light', #1e66f5, #89b4fa);
+
+// Theme defaults
+$default-light: $blue-light;
+$default-dark: $blue-dark;

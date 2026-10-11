@@ -1,0 +1,5 @@
+singleton Style 1.0 Style.qml
+Island 1.0 Island.qml
+Settings 1.0 Settings.qml
+Authentication 1.0 Authentication.qml
+ControlCenter 1.0 ControlCenter.qml

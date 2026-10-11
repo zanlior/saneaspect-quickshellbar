@@ -1,0 +1,71 @@
+// Default Theme Color Palette Tokyo Night
+// Red
+$red-light: #f7768e;
+$red-dark: #ff2d5e;
+
+// Pink
+$pink-light: #ff4499;
+$pink-dark: #f71a88;
+
+// Purple
+$purple-light: #bb9af7;
+$purple-dark: #9d7cd8;
+
+// Blue
+$blue-light: #7aa2f7;
+$blue-dark: #565f99;
+
+// Teal (aqua)
+$teal-light: #2ac3de;
+$teal-dark: #14919e;
+
+// Green
+$green-light: #9ece6a;
+$green-dark: #6cb550;
+
+// Yellow
+$yellow-light: #e0af68;
+$yellow-dark: #c68e51;
+
+// Orange
+$orange-light: #ff9e64;
+$orange-dark: #d65d34;
+
+// Grey (050=light text, 950=darkest bg)
+$grey-050: #c0caf5;   // Text primary
+$grey-100: #a9b1d6;   // Text bright  
+$grey-150: #969bbd;   // Text secondary
+$grey-200: #787c99;   // Text muted
+$grey-250: #565f89;   // Comment grey
+$grey-300: #414868;   // Dark grey
+$grey-350: #3b4261;   // Gutter/borders
+$grey-400: #292e42;   // Highlight bg
+$grey-450: #252a3e;   // Darker surface
+$grey-500: #24283b;   // Elevated bg_dark
+$grey-550: #1f2336;   // Dark surface
+$grey-600: #1a1b26;   // Main bg
+$grey-650: #161720;   // Deep surface (ADDED)
+$grey-700: #131420;   // Deeper
+$grey-750: #0f1017;   // Darker
+$grey-800: #0c0d12;   // Very dark
+$grey-850: #090a0e;   // Extra dark
+$grey-900: #06070a;   // Near black
+$grey-950: #010101;   // Deepest black
+
+// White
+$white: #c0caf5;
+
+// Black  
+$black: #010101;
+
+// Button (dark variant)
+$button-close: #ff8aa1;
+$button-max: #b3e085;
+$button-min: #f5c278;
+
+// Link
+$links: #7aa2f7;
+
+// Theme
+$default-light: $blue-light;
+$default-dark: $blue-dark;
