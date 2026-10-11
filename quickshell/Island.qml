@@ -430,6 +430,7 @@ Item {
             }
             MediaCard {
                 objectName: 'media-card'
+                menuOpen: root.mediaPanel
                 anchors.right: parent.right
                 anchors.top: parent.top
                 anchors.margins: 14
@@ -771,6 +772,7 @@ Item {
             }
             MediaCard {
                 objectName: 'media-game-card'
+                menuOpen: root.page === 'media' && !root.mediaPanel
                 visible: root.visualPage === 'media' && !root.visualMediaPanel
                 anchors.fill: parent
                 bridge: root.bridge

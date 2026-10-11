@@ -6,6 +6,8 @@ CONFIG = pathlib.Path(os.environ.get('XDG_CONFIG_HOME', pathlib.Path.home()/'.co
 DEFAULTS = json.loads((ROOT/'defaults.json').read_text())
 sys.path.insert(0,str(ROOT/'scripts'))
 from service_events import ServiceEvents
+from media_activity import MediaRecency
+MEDIA_RECENCY = MediaRecency()
 import themes
 from prayer_times import PrayerService, configuration as prayer_configuration
 from prayer_reminders import PrayerReminders, AzanPlayer
@@ -158,11 +160,12 @@ def media():
         players.append(dict(id=identity,title=p[0],artist=p[1],album=p[2],art=p[3],length=length,player=label,position=position,playing=status=='Playing',url=p[6] if len(p)>6 else ''))
     # The extension supplies real tab cards; avoid an extra card for the
     # browser's shared endpoint when its exact media URL is already bridged.
+    preferred_url=next((p['url'] for p in players if p['id'].split('.')[0] in ('firefox','zen') and p['url']), '')
     bridged_urls={p['url'] for p in players if p['id'].startswith('mprisence_web.') and p['url']}
     players=[p for p in players if not (p['id'].split('.')[0] in ('firefox','zen','chromium','chrome') and p['url'] in bridged_urls)]
+    players=MEDIA_RECENCY.arrange(players,preferred_url)
     if not players:return {}
-    current=next((p for p in players if p['playing']),players[0])
-    return dict(current,players=players)
+    return dict(players[0],players=players)
 
 
 def desktop():

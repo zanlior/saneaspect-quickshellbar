@@ -6,7 +6,43 @@ RoundedPanel {
     id: root
     required property var bridge
     property var snapshot: bridge.state.media || ({})
-    readonly property var players: snapshot.players || []
+    property bool menuOpen: visible && enabled
+    property var playerOrder: []
+    property bool awaitingRefresh: false
+    readonly property var players: {
+        const available = snapshot.players || [];
+        return available.slice().sort((a, b) => {
+            const ai = playerOrder.indexOf(a.id);
+            const bi = playerOrder.indexOf(b.id);
+            return (ai < 0 ? playerOrder.length : ai) - (bi < 0 ? playerOrder.length : bi);
+        });
+    }
+    onMenuOpenChanged: {
+        if (menuOpen) beginOpening();
+        else finishOpeningRefresh();
+    }
+    onSnapshotChanged: {
+        if (menuOpen && snapshot.id && (!selectedPlayer || (awaitingRefresh && !swipe.pressed && !settling))) {
+            openLatest();
+            finishOpeningRefresh();
+        }
+    }
+    Component.onCompleted: { if (menuOpen) beginOpening(); }
+    function beginOpening() {
+        openLatest();
+        awaitingRefresh = true;
+        openingRefresh.restart();
+    }
+    function finishOpeningRefresh() {
+        awaitingRefresh = false;
+        openingRefresh.stop();
+    }
+    Timer { id: openingRefresh; interval: 1500; onTriggered: root.awaitingRefresh = false }
+    function openLatest() {
+        cancelSwipe();
+        playerOrder = (snapshot.players || []).map(player => player.id);
+        selectedPlayer = snapshot.id || playerOrder[0] || '';
+    }
     property string selectedPlayer: ''
     readonly property var media: players.find(player => player.id === selectedPlayer) || snapshot
     readonly property int playerIndex: Math.max(0, players.findIndex(player => player.id === media.id))
@@ -18,6 +54,7 @@ RoundedPanel {
         if (selectedPlayer && !players.some(player => player.id === selectedPlayer)) {
             cancelSwipe();
             selectedPlayer = '';
+            if (menuOpen) openLatest();
         }
         if (players.length < 2 || (pendingPlayer && !players.some(player => player.id === pendingPlayer)))
             cancelSwipe();
@@ -33,6 +70,7 @@ RoundedPanel {
     }
     function switchPlayer(direction) {
         if (players.length < 2 || settling) return;
+        finishOpeningRefresh();
         selectedPlayer = media.id || '';
         pendingPlayer = pageMedia(direction).id;
         settle.to = -direction * pageDistance;
@@ -60,6 +98,7 @@ RoundedPanel {
         property real startX: 0
         property real startY: 0
         onPressed: mouse => {
+            root.finishOpeningRefresh();
             startX = mouse.x;
             startY = mouse.y;
             // Pin the page during playback updates from other players.
