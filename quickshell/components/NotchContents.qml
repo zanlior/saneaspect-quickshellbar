@@ -11,13 +11,22 @@ Item {
     readonly property var media: bridge.state.media || ({})
     readonly property var wifi: bridge.state.wifi || ({})
     readonly property var connected: (wifi.networks || []).find(n => n.active)
+    readonly property int workspaceSlots: {
+        let highest = desktop.active || 1;
+        for (const id of desktop.workspaces || []) highest = Math.max(highest, Number(id) || 1);
+        return Math.max(5, Math.min(10, highest));
+    }
+    // In compact mode, keep the workspace strip clear of the centered clock.
+    readonly property real minimumBarWidth: Math.max(240,
+        2 * (24 + sidePadding - 6 + workspaceRow.implicitWidth + 12) + clockReadout.implicitWidth,
+        2 * (24 + sidePadding + status.implicitWidth + 12) + clockReadout.implicitWidth)
     // The expanded host supplies 16px; the compact host supplies 24px.
     readonly property real sidePadding: expanded ? 22 : 14
     signal openPage(string page)
 
     Column {
         anchors.left: parent.left
-        anchors.leftMargin: root.sidePadding - (root.expanded ? 0 : 12)
+        anchors.leftMargin: root.sidePadding - (root.expanded ? 0 : 6)
         anchors.verticalCenter: parent.verticalCenter
         spacing: 10
         Row {
@@ -31,9 +40,10 @@ Item {
             Label { text: 'Desktop'; font.pixelSize: 12 }
         }
         Row {
+            id: workspaceRow
             spacing: 5
             Repeater {
-                model: Math.max(5, Math.min(10, root.desktop.active || 1))
+                model: root.workspaceSlots
                 Rectangle {
                     required property int index
                     readonly property bool active: index + 1 === root.desktop.active
@@ -59,6 +69,7 @@ Item {
         y: root.expanded ? 4 : (parent.height - height) / 2
         spacing: 9
         ClockLabel {
+            id: clockReadout
             text: Qt.formatDateTime(root.now, Style.settings.clock24 ? (Style.settings.seconds ? 'HH:mm:ss' : 'HH:mm') : 'h:mm AP')
             font.pixelSize: root.expanded ? 22 : 15
         }

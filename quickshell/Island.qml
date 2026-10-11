@@ -450,7 +450,7 @@ Item {
         visible: !root.mediaTransition && !root.sideTransition && (!Style.settings.gameMode || root.expanded || root.visualPage !== '' || !!bridge.toast || !!root.osd)
         x: (root.width - width) / 2
         y: Style.settings.notch ? 0 : Style.settings.gameMode ? Style.settings.gameHeight + 8 : Math.max(0, Style.settings.edgeGap - (root.stageHovered ? Style.settings.hoverLift : 0))
-        width: Math.min(root.width - 16, root.expanded && !root.mediaPanel && !root.sidePanel ? root.panelWidth + root.notchMenuSidePadding * 2 : bridge.toast ? Style.settings.notificationWidth : root.osd ? 300 : root.collapsedBarWidth + (root.notchHovered ? Style.settings.hoverLift * 2 : 0))
+        width: Math.min(root.width - 16, root.expanded && !root.mediaPanel && !root.sidePanel ? root.panelWidth + root.notchMenuSidePadding * 2 : bridge.toast ? Style.settings.notificationWidth : root.osd ? 300 : Math.max(root.collapsedBarWidth, Style.settings.notch ? compactContents.minimumBarWidth : 0) + (root.notchHovered ? Style.settings.hoverLift * 2 : 0))
         height: root.expanded ? root.panelHeight : bridge.toast ? 74 : root.osd ? 46 : Style.settings.barHeight + (root.notchHovered ? Style.settings.hoverLift : 0)
         radius: root.expanded ? Style.settings.expandedRadius : Style.settings.radius
         color: Style.settings.notch && !Style.settings.gameMode ? 'transparent' : root.page === 'media' ? '#000000' : Style.bg
@@ -555,6 +555,7 @@ Item {
                 }
             }
             NotchContents {
+                id: compactContents
                 objectName: 'notch-compact'
                 anchors.fill: parent
                 anchors.leftMargin: 24; anchors.rightMargin: 24
