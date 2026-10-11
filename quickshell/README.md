@@ -29,6 +29,11 @@ The wallpaper picker requires a running `awww-daemon` or `swww-daemon`. Put your
 
 ## Hyprland integration
 
+For this full package, follow the [root integration instructions](../README.md).
+Do not run the standalone installer over the included modules: it replaces
+`modules/island.lua`. The commands below are for a standalone bar installation
+into a separately backed-up desktop configuration.
+
 Review the install plan, then install:
 
 ```sh
