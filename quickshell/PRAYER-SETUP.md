@@ -14,7 +14,7 @@ The public copy has no API endpoint, city or country configured. It does not req
 
 4. Enter your own **City** and **Country**. These are deliberately blank in the public copy.
 5. Choose the calculation method and whether to use Hanafi Asr. Choose the method suitable for your timetable rather than assuming the included default is appropriate for your location.
-6. Audio paths start blank. Before the public setup refinement, set `prayerFajrAzanFolder`, `prayerAzanFolder` and optional `prayerAzanFile` in your local `island-shell/settings.json`. The final setup stage exposes these paths in Settings.
+6. If you want azan audio, set your local audio folders/files in the same settings page.
 
 Settings are saved locally in `${XDG_CONFIG_HOME:-$HOME/.config}/island-shell/settings.json`. Keep that file out of the public repository.
 

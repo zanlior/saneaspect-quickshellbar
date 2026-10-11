@@ -26,7 +26,7 @@ Item {
     property var fields: ({
             'Bar & Island': [['notch', 'Notch mode', 'bool'], ['barHeight', 'Bar height', 24, 60, 'px'], ['collapsedWidth', 'Collapsed width', 80, 240, 'px'], ['expandedHeight', 'Expanded height', 100, 200, 'px'], ['edgeGap', 'Gap from screen edge', 0, 32, 'px'], ['innerPadding', 'Inner padding', 0, 12, 'px'], ['radius', 'Corner radius', 0, 40, 'px'], ['expandedRadius', 'Corner radius (expanded)', 0, 48, 'px'], ['statusCircle', 'Status circle (battery and Wi-Fi)', 'bool'], ['albumCircle', 'Album art circle while a player is open', 'bool'], ['hoverLift', 'Stage lift on hover', 0, 20, 'px'], ['gameHeight', 'Game mode bar height', 32, 72, 'px'], ['clusterGap', 'Game mode cluster gap', 60, 240, 'px']],
             'Clock & Date': [['clock24', '24-hour clock', 'bool'], ['seconds', 'Show seconds', 'bool'], ['weekMonday', 'Start week on Monday', 'bool'], ['dateFormat', 'Date format', 'text']],
-            'Prayer Times': [['prayerApiUrl', 'Prayer API URL ({date} placeholder)', 'text'], ['prayerCity', 'City', 'text'], ['prayerCountry', 'Country', 'text'], ['prayerHanafi', 'Hanafi Asr calculation', 'bool'], ['prayerReminders', 'Remind me 15 and 5 minutes before', 'bool'], ['prayerAzan', 'Play azan at prayer time', 'bool'], ['prayerAzanVolume', 'Azan volume', 0, 100, '%']],
+            'Prayer Times': [['prayerApiUrl', 'Prayer API URL ({date} placeholder)', 'text'], ['prayerCity', 'City', 'text'], ['prayerCountry', 'Country', 'text'], ['prayerFajrAzanFolder', 'Fajr MP3 folder', 'text'], ['prayerAzanFolder', 'Other prayers MP3 folder', 'text'], ['prayerAzanFile', 'Fallback MP3 file (other prayers)', 'text'], ['prayerHanafi', 'Hanafi Asr calculation', 'bool'], ['prayerReminders', 'Remind me 15 and 5 minutes before', 'bool'], ['prayerAzan', 'Play azan at prayer time', 'bool'], ['prayerAzanVolume', 'Azan volume', 0, 100, '%']],
             'Appearance': [['fontFamily', 'Interface and clock font', 'text'], ['monoFontFamily', 'Numeric readout font', 'text'], ['fontSize', 'Text size', 11, 20, 'px']],
             'Motion': [['reduceMotion', 'Reduce motion', 'bool'], ['movement', 'Movement (size / position)', 0, 900, 'ms'], ['fade', 'Fades & colour', 0, 700, 'ms'], ['hover', 'Hover response', 0, 400, 'ms'], ['bounce', 'Bounce', 0, 100, '%']],
             'Launcher': [['launcherWidth', 'Width', 360, 1000, 'px'], ['rowHeight', 'Row height', 36, 72, 'px'], ['launcherRows', 'Rows before scrolling', 3, 12, '']],
@@ -274,7 +274,7 @@ Item {
                             visible: root.section === 'Prayer Times'
                             Layout.fillWidth: true
                             wrapMode: Text.WordWrap
-                            text: 'Audio paths start blank. Configure prayerFajrAzanFolder and prayerAzanFolder in your local settings.json to use MP3 collections.'
+                            text: 'Choose your local MP3 folders above. Audio paths start blank. Add recordings to your chosen folders at any time; no upload is needed.'
                             color: Style.muted; font.pixelSize: 12
                         }
                         Flow {

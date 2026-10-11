@@ -19,7 +19,7 @@ The wallpaper picker requires a running `awww-daemon` or `swww-daemon`. Put your
 ## Interaction
 
 - Hover the clock, media circle or Wi-Fi circle for a small lift; hover keeps panels closed. Click the clock to toggle the small date preview. Click the preview to open prayer times; Shift-click the preview for the full month calendar. Shift-click the bar clock to open prayer times directly.
-- Click the album circle for media, or the Wi-Fi circle for the control center. Hold and drag artwork or track details to reveal an adjacent player card, then release to settle. Left/Right keys also switch players. Each opening selects the most recently started or resumed audio.
+- Click the album circle for media, or the Wi-Fi circle for the control center. When several players are open, hold and drag the artwork or track details left/right to reveal the adjacent player card alongside the current card. Release to settle on that player, or drag back to keep the current one. The slide settles over 420 ms. Each opening starts with the most recently started or resumed audio, with the others available by swiping. The dots show the selected player; transport and seeking control that player. Left/Right arrow keys also switch players.
 - Right-click the clock/status circle for settings. Middle-click the clock for apps.
 - Scroll over the clock to change volume. Volume and brightness changes show an OSD.
 - Click the control center's lock button to lock immediately. Super + L locks this desktop; Super + M or Alt + L toggles the separate power menu.
@@ -177,8 +177,8 @@ skipped after startup or resume. A journal in
 `~/.config/island-shell/prayer-reminders.json` prevents duplicate alerts across
 restarts, overlapping shell instances, or refreshed timetables.
 
-Audio folders start blank. In Settings → Prayer Times, configure `prayerFajrAzanFolder`
-and `prayerAzanFolder` in your local `island-shell/settings.json`. No upload is
+Audio folders start blank. In Settings → Prayer Times, set **Fajr MP3 folder**
+and **Other prayers MP3 folder** to your own local collections. No upload is
 needed. Fajr chooses from its folder; Dhuhr, Asr, Maghrib, and Isha choose from
 the other prayers folder (or its fallback MP3 file). Each prayer makes a fresh
 random selection, so the same recording may occasionally be chosen again.
