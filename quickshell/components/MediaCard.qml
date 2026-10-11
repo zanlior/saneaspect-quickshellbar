@@ -8,137 +8,116 @@ RoundedPanel {
     property var snapshot: bridge.state.media || ({})
     readonly property var players: snapshot.players || []
     property string selectedPlayer: ''
-    onPlayersChanged: {
-        if (selectedPlayer && !players.some(player => player.id === selectedPlayer))
-            selectedPlayer = '';
-    }
-    readonly property string displayedPlayer: media.id || ''
-    onDisplayedPlayerChanged: progress.previewing = false
     readonly property var media: players.find(player => player.id === selectedPlayer) || snapshot
     readonly property int playerIndex: Math.max(0, players.findIndex(player => player.id === media.id))
+    readonly property real pageDistance: width + 12
     property real swipeOffset: 0
+    property string pendingPlayer: ''
+    readonly property bool settling: settle.running
+    onPlayersChanged: {
+        if (selectedPlayer && !players.some(player => player.id === selectedPlayer)) {
+            cancelSwipe();
+            selectedPlayer = '';
+        }
+        if (players.length < 2 || (pendingPlayer && !players.some(player => player.id === pendingPlayer)))
+            cancelSwipe();
+    }
+    function pageMedia(offset) {
+        if (offset === 0 || players.length < 2) return media;
+        return players[(playerIndex + offset + players.length) % players.length];
+    }
+    function cancelSwipe() {
+        settle.stop();
+        pendingPlayer = '';
+        swipeOffset = 0;
+    }
     function switchPlayer(direction) {
-        if (players.length < 2) return;
-        selectedPlayer = players[(playerIndex + direction + players.length) % players.length].id;
+        if (players.length < 2 || settling) return;
+        selectedPlayer = media.id || '';
+        pendingPlayer = pageMedia(direction).id;
+        settle.to = -direction * pageDistance;
+        settle.start();
+    }
+    function returnToCurrent() {
+        pendingPlayer = '';
+        settle.to = 0;
+        settle.start();
     }
     Keys.onLeftPressed: switchPlayer(-1)
     Keys.onRightPressed: switchPlayer(1)
     antialiasing: true
     radius: 24
     color: Style.panel
-    function timeText(seconds) {
-        return Math.floor((seconds || 0) / 60) + ':' + ('0' + Math.floor((seconds || 0) % 60)).slice(-2);
-    }
-    RoundedImage {
-        anchors.fill: parent
-        source: root.media.art || ''
-        // The panel masks artwork and shading together after compositing.
-        radius: 0
-        blur: 1
-        visible: !!root.media.art && root.visible
-    }
-    Rectangle {
-        anchors.fill: parent
-        gradient: Gradient {
-            GradientStop { position: 0; color: Qt.rgba(Style.panel.r, Style.panel.g, Style.panel.b, .58) }
-            GradientStop { position: 1; color: Qt.rgba(Style.bg.r, Style.bg.g, Style.bg.b, .88) }
-        }
-    }
+
+    // Keep the gesture surface still while complete pages slide over it.
+    // The page controls sit above this surface and retain their own gestures.
     MouseArea {
         id: swipe
         objectName: 'media-swipe'
         anchors.fill: parent
-        enabled: root.players.length > 1
+        enabled: root.players.length > 1 && !root.settling
         cursorShape: pressed ? Qt.ClosedHandCursor : Qt.OpenHandCursor
         property real startX: 0
         property real startY: 0
-        property bool switched: false
-        onPressed: mouse => { startX = mouse.x; startY = mouse.y; switched = false; }
-        onPositionChanged: mouse => {
-            if (!pressed || switched) return;
-            const distance = mouse.x - startX;
-            root.swipeOffset = Math.max(-45, Math.min(45, distance));
-            if (Math.abs(distance) >= 45 && Math.abs(distance) > Math.abs(mouse.y - startY)) {
-                root.switchPlayer(distance < 0 ? 1 : -1);
-                switched = true;
-                root.swipeOffset = 0;
-            }
+        onPressed: mouse => {
+            startX = mouse.x;
+            startY = mouse.y;
+            // Pin the page during playback updates from other players.
+            root.selectedPlayer = root.media.id || '';
         }
-        onReleased: root.swipeOffset = 0
-        onCanceled: root.swipeOffset = 0
+        onPositionChanged: mouse => {
+            if (!pressed) return;
+            const dx = mouse.x - startX;
+            const dy = mouse.y - startY;
+            root.swipeOffset = Math.abs(dx) > Math.abs(dy)
+                ? Math.max(-root.pageDistance, Math.min(root.pageDistance, dx)) : 0;
+        }
+        onReleased: {
+            if (Math.abs(root.swipeOffset) >= Math.min(45, root.width * .2))
+                root.switchPlayer(root.swipeOffset < 0 ? 1 : -1);
+            else
+                root.returnToCurrent();
+        }
+        onCanceled: {
+            if (!root.settling) root.returnToCurrent();
+        }
     }
     Item {
-        id: content
-        x: root.swipeOffset
-        width: root.width
-        height: root.height
-        Behavior on x { enabled: !swipe.pressed || swipe.switched; NumberAnimation { duration: 420; easing.type: Easing.OutCubic } }
-        Rectangle {
-            id: cover
-            x: 14; y: 14; width: 120; height: 120
-            radius: 12
-            color: Style.card
-            RoundedImage {
-                objectName: 'player-artwork'
-                anchors.fill: parent
-                source: root.media.art || ''
-                radius: parent.radius
-            }
-            Icon { anchors.centerIn: parent; name: 'media'; visible: !root.media.art; width: 36; height: 36 }
-        }
-        Item {
-            id: info
-            anchors.left: cover.right
-            anchors.leftMargin: 16
-            anchors.right: parent.right
-            anchors.rightMargin: 14
-            anchors.top: parent.top
-            anchors.topMargin: 14
-            anchors.bottom: parent.bottom
-            anchors.bottomMargin: 14
-            Column {
-                width: parent.width
-                spacing: 2
-                Label { width: parent.width; text: root.media.title || 'Nothing playing'; font.pixelSize: 20; font.weight: Font.DemiBold }
-                Label { width: parent.width; text: root.media.artist || 'Open a music or video player'; font.pixelSize: 14; color: Style.muted }
-                Label { width: parent.width; text: root.media.album || ''; font.pixelSize: 12; color: Style.muted }
-                Label { width: parent.width; text: root.media.player || ''; font.pixelSize: 11; color: Style.muted }
-            }
-            Level {
-                id: progress
-                objectName: 'media-progress'
-                y: 88
-                width: parent.width
-                thin: true
-                value: root.media.position || 0
-                to: Math.max(1, root.media.length || 0)
-                enabled: root.media.length > 0
-                onMoved: value => root.bridge.send('seek', value, root.media.id || '')
-            }
-            Label {
-                x: 0; y: 104
-                text: root.timeText(progress.shownValue)
-                monospace: true; font.pixelSize: 11; color: Style.muted
-            }
-            Label {
-                anchors.right: parent.right
-                y: 104
-                text: root.timeText(root.media.length)
-                monospace: true; font.pixelSize: 11; color: Style.muted
-            }
-            Row {
-                anchors.horizontalCenter: parent.horizontalCenter
-                anchors.bottom: parent.bottom
-                spacing: 12
-                TransportButton { action: 'previous'; icon: 'previous' }
-                TransportButton { action: 'play-pause'; icon: root.media.playing ? 'pause' : 'play'; highlighted: true }
-                TransportButton { action: 'next'; icon: 'next' }
+        id: viewport
+        anchors.fill: parent
+        clip: true
+        Repeater {
+            model: 3
+            MediaPage {
+                required property int index
+                readonly property int pageOffset: index - 1
+                objectName: pageOffset < 0 ? 'media-page-previous' : pageOffset > 0 ? 'media-page-next' : 'media-page-current'
+                x: root.swipeOffset + pageOffset * root.pageDistance
+                width: root.width
+                height: root.height
+                media: root.pageMedia(pageOffset)
+                bridge: root.bridge
+                interactive: pageOffset === 0
+                enabled: interactive && !root.settling
+                visible: (pageOffset === 0 || root.players.length > 1) && x < root.width && x + width > 0
             }
         }
     }
-    Column {
-        x: 14; y: 146; width: 120
-        spacing: 5
+    NumberAnimation {
+        id: settle
+        target: root
+        property: 'swipeOffset'
+        duration: 420
+        easing.type: Easing.OutCubic
+        onFinished: {
+            if (root.pendingPlayer) root.selectedPlayer = root.pendingPlayer;
+            root.pendingPlayer = '';
+            root.swipeOffset = 0;
+        }
+    }
+    Item {
+        y: root.height - 10
+        width: root.width
         visible: root.players.length > 1
         Row {
             anchors.horizontalCenter: parent.horizontalCenter
@@ -152,22 +131,5 @@ RoundedPanel {
                 }
             }
         }
-    }
-    component TransportButton: Rectangle {
-        required property string action
-        required property string icon
-        property bool highlighted: false
-        width: 40; height: 40; radius: 20
-        color: Qt.rgba(1, 1, 1, button.pressed ? .22 : button.containsMouse ? .17 : highlighted ? .12 : 0)
-        Icon { anchors.centerIn: parent; name: parent.icon; width: 18; height: 18 }
-        MouseArea {
-            id: button
-            anchors.fill: parent
-            hoverEnabled: true
-            cursorShape: Qt.PointingHandCursor
-            onClicked: root.bridge.send('media', parent.action, root.media.id || '')
-        }
-        Accessible.role: Accessible.Button
-        Accessible.name: action
     }
 }

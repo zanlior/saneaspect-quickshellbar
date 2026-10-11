@@ -19,7 +19,7 @@ The wallpaper picker requires a running `awww-daemon` or `swww-daemon`. Put your
 ## Interaction
 
 - Hover the clock, media circle or Wi-Fi circle for a small lift; hover keeps panels closed. Click the clock to toggle the small date preview. Click the preview to open prayer times; Shift-click the preview for the full month calendar. Shift-click the bar clock to open prayer times directly.
-- Click the album circle for media, or the Wi-Fi circle for the control center. Swipe artwork or track details left/right or use Left/Right keys to select a player. Transport and seeking target that player.
+- Click the album circle for media, or the Wi-Fi circle for the control center. Hold and drag artwork or track details to reveal an adjacent player card, then release to settle. Left/Right keys also switch players.
 - Right-click the clock/status circle for settings. Middle-click the clock for apps.
 - Scroll over the clock to change volume. Volume and brightness changes show an OSD.
 - Click the control center's lock button to lock immediately. Super + L locks this desktop; Super + M or Alt + L toggles the separate power menu.
