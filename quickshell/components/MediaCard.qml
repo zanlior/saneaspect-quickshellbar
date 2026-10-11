@@ -72,7 +72,7 @@ RoundedPanel {
         x: root.swipeOffset
         width: root.width
         height: root.height
-        Behavior on x { enabled: !swipe.pressed; NumberAnimation { duration: 160; easing.type: Easing.OutCubic } }
+        Behavior on x { enabled: !swipe.pressed || swipe.switched; NumberAnimation { duration: 420; easing.type: Easing.OutCubic } }
         Rectangle {
             id: cover
             x: 14; y: 14; width: 120; height: 120
@@ -151,13 +151,6 @@ RoundedPanel {
                     color: index === root.playerIndex ? Style.accent : Style.muted
                 }
             }
-        }
-        Label {
-            width: parent.width
-            text: 'Drag left / right'
-            horizontalAlignment: Text.AlignHCenter
-            font.pixelSize: 10
-            color: Style.muted
         }
     }
     component TransportButton: Rectangle {

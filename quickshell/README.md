@@ -192,3 +192,42 @@ Azan playback is enabled by default and starts at each prayer time using
 show collection counts and provide Test Fajr, Test other prayers, Test
 reminder, and Stop azan buttons. Tests do not consume scheduled reminders.
 Exiting Island stops playback. An empty collection skips audio for that prayer; reminders continue normally.
+
+## Individual browser tab cards
+
+Zen/Firefox normally publishes a single shared media player. Individual tab
+cards require the [mprisence bridge extension](https://addons.mozilla.org/en-US/firefox/addon/mprisence-bridge/)
+and its native host. The installed shell includes the upstream mprisence 1.9.1
+binary under `scripts/vendor/mprisence/`; it runs as a native messaging host
+when the browser extension connects. Register the native host for your own
+installation before using the extension. From the installed `quickshell/` folder:
+
+```sh
+python3 - <<'PY'
+import json
+from pathlib import Path
+host = (Path.cwd() / "scripts/vendor/mprisence/mprisence").resolve()
+assert host.is_file(), "Run this from the installed quickshell directory"
+manifest = Path.home() / ".mozilla/native-messaging-hosts/mprisence.web.bridge.json"
+manifest.parent.mkdir(parents=True, exist_ok=True)
+manifest.write_text(json.dumps({
+    "name": "mprisence.web.bridge", "description": "Mprisence native messaging host",
+    "path": str(host), "type": "stdio",
+    "allowed_extensions": ["mprisence-bridge@lazykern.foo"]
+}, indent=2) + "\n")
+PY
+```
+
+This creates a local manifest containing your installation path; keep it out
+of the repository. The bundled binary is for Linux x86_64.
+
+YouTube, YouTube Music, SoundCloud, Bandcamp, Tidal and Apple Music are supported
+by default. After installing the extension, refresh media tabs if they do not
+appear. For other sites, enable the extension's generic media option and grant
+its requested site access. Native apps continue to use their own media players.
+The menu suppresses the shared browser card when a tab card has the same URL.
+
+The binary comes from the official
+[mprisence 1.9.1 release](https://github.com/lazykern/mprisence/releases/tag/v1.9.1);
+its downloaded archive was verified against SHA-256
+`5c42efd84275d0114a9d49a070d6dd0f44242d38daa25c64ee3de54de072c000`.

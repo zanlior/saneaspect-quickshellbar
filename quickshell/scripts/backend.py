@@ -142,7 +142,7 @@ def media():
     # different players with the same friendly name.
     for identity in dict.fromkeys(run(['playerctl','--list-all']).splitlines()):
         args=['playerctl','--player',identity]
-        raw=run(args+['metadata','--format','{{title}}\n{{artist}}\n{{album}}\n{{mpris:artUrl}}\n{{mpris:length}}\n{{playerName}}'])
+        raw=run(args+['metadata','--format','{{title}}\n{{artist}}\n{{album}}\n{{mpris:artUrl}}\n{{mpris:length}}\n{{playerName}}\n{{xesam:url}}'])
         p=raw.split('\n')
         if len(p)<6:continue
         try:length=int(p[4])/1000000
@@ -151,7 +151,15 @@ def media():
         except ValueError:position=0
         status=run(args+['status'])
         if status not in ('Playing','Paused'):continue
-        players.append(dict(id=identity,title=p[0],artist=p[1],album=p[2],art=p[3],length=length,player=p[5],position=position,playing=status=='Playing'))
+        label=p[5]
+        if identity.startswith('mprisence_web.'):
+            site=identity.split('.')[1]
+            label={'youtube':'YouTube','youtube_music':'YouTube Music','soundcloud':'SoundCloud','bandcamp':'Bandcamp'}.get(site,site.title())+' · browser tab'
+        players.append(dict(id=identity,title=p[0],artist=p[1],album=p[2],art=p[3],length=length,player=label,position=position,playing=status=='Playing',url=p[6] if len(p)>6 else ''))
+    # The extension supplies real tab cards; avoid an extra card for the
+    # browser's shared endpoint when its exact media URL is already bridged.
+    bridged_urls={p['url'] for p in players if p['id'].startswith('mprisence_web.') and p['url']}
+    players=[p for p in players if not (p['id'].split('.')[0] in ('firefox','zen','chromium','chrome') and p['url'] in bridged_urls)]
     if not players:return {}
     current=next((p for p in players if p['playing']),players[0])
     return dict(current,players=players)
