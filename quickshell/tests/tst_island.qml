@@ -43,6 +43,59 @@ Item {
             mouseMove(scene, 20, 700); wait(180);
             commands.clear();
         }
+        function test_workspace_and_dock_themes_each_have_floating_and_notch_modes() {
+            const main = findChild(island, 'island-panel');
+            for (const theme of ['workspace', 'apple']) {
+                for (const notch of [false, true]) {
+                    Style.settings = Object.assign({}, Style.settings, {theme:'monochrome', barTheme:theme, notch:notch});
+                    wait(140);
+                    compare(Style.settings.theme, 'monochrome');
+                    compare(main.y, notch ? 0 : Style.settings.edgeGap);
+                    compare(findChild(island, 'notch-compact').visible, theme === 'workspace');
+                    compare(findChild(island, 'status-circle').visible, theme === 'apple');
+                    compare(findChild(island, 'media-circle').visible, theme === 'apple');
+                    if (theme === 'apple') {
+                        tryCompare(main, 'width', Style.settings.collapsedWidth + (notch ? island.dockNotchSidePadding * 2 : 0));
+                        const mediaCircle = findChild(island, 'media-circle');
+                        const statusCircle = findChild(island, 'status-circle');
+                        compare(mediaCircle.y, Style.settings.edgeGap);
+                        compare(statusCircle.y, Style.settings.edgeGap);
+                        compare(main.x - mediaCircle.x - mediaCircle.width, island.dockCircleGap);
+                        compare(statusCircle.x - main.x - main.width, island.dockCircleGap);
+                    }
+                    island.page = 'glance'; wait(140);
+                    compare(island.panelWidth, theme === 'workspace' ? 670 : 272);
+                    compare(findChild(island, 'clock-preview').visible, theme === 'apple');
+                    compare(findChild(island, 'notch-expanded').visible, theme === 'workspace');
+                    island.requestPage(''); wait(140);
+                }
+            }
+        }
+        function test_bar_theme_selector_preserves_notch_mode_and_palette() {
+            Style.settings = Object.assign({}, Style.settings, {theme:'monochrome', barTheme:'apple', notch:true});
+            island.page = 'bars'; wait(180);
+            const carousel = findChild(island, 'selector-carousel');
+            compare(carousel.model, ['Workspace', 'Dock']);
+            compare(carousel.currentIndex, 1);
+            verify(findChild(island, 'applied-dot-Dock').visible);
+            commands.clear();
+            carousel.currentIndex = 0;
+            compare(Style.settings.barTheme, 'apple');
+            keyClick(Qt.Key_Return);
+            compare(Style.settings.barTheme, 'workspace');
+            compare(Style.settings.notch, true);
+            compare(Style.settings.theme, 'monochrome');
+            compare(commands.signalArguments[0][1], 'barTheme');
+            compare(commands.signalArguments[0][2], 'workspace');
+            tryCompare(island, 'page', '');
+            island.page = 'bars'; wait(180);
+            compare(carousel.currentIndex, 0);
+            verify(findChild(island, 'applied-dot-Workspace').visible);
+            mouseClick(findChild(island, 'selector-card-Dock'));
+            compare(Style.settings.barTheme, 'apple');
+            compare(Style.settings.notch, true);
+            compare(Style.settings.theme, 'monochrome');
+        }
         function test_launcher_search_navigation_launch_and_reopen() {
             mock.applications = [
                 {name:'About Xfce',comment:'Information about the Xfce Desktop Environment',keywords:[],execute:()=>mock.launches++},

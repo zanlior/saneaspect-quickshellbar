@@ -192,6 +192,7 @@ Item {
                                         font.pixelSize: 13
                                     }
                                     Toggle {
+                                        objectName: 'settings-toggle-' + modelData[0]
                                         visible: modelData[2] === 'bool'
                                         checked: !!Style.settings[modelData[0]]
                                         onToggled: v => root.set(modelData[0], v)

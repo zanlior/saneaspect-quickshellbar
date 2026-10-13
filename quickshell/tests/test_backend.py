@@ -3,6 +3,19 @@ from unittest.mock import patch
 spec=importlib.util.spec_from_file_location('backend',pathlib.Path(__file__).parents[1]/'scripts/backend.py')
 b=importlib.util.module_from_spec(spec);spec.loader.exec_module(b)
 class BackendTests(unittest.TestCase):
+    def test_bar_theme_and_mode_remain_independent(self):
+        with tempfile.TemporaryDirectory() as folder, patch.object(b, 'CONFIG', pathlib.Path(folder)):
+            (b.CONFIG/'settings.json').write_text(json.dumps({'notch': True, 'theme': 'monochrome'}))
+            self.assertEqual(b.settings_load()['barTheme'], 'workspace')
+            backend = b.Backend()
+            with patch.object(b, 'save_settings'), patch.object(backend, 'emit'):
+                backend.command({'action':'setting', 'value':'notch', 'extra':False})
+                self.assertEqual((backend.settings['barTheme'], backend.settings['theme']), ('workspace', 'monochrome'))
+                backend.command({'action':'setting', 'value':'barTheme', 'extra':'apple'})
+                self.assertEqual((backend.settings['notch'], backend.settings['theme']), (False, 'monochrome'))
+                with self.assertRaises(ValueError):
+                    backend.command({'action':'setting', 'value':'barTheme', 'extra':'unknown'})
+
     def test_clipboard_decode_preserves_binary_data_and_checks_return_code(self):
         from types import SimpleNamespace
         backend=b.Backend()
@@ -65,7 +78,7 @@ class BackendTests(unittest.TestCase):
             b.Backend().command({'action':'brightness','value':50,'extra':'DP-1'})
             run.assert_called_once_with(['ddcutil','setvcp','10','128','--bus','7'],timeout=5,check=True)
     def test_scan_status_tracks_the_scan_command_and_clears_after_completion(self):
-        messages=queue.Queue();release=threading.Event();scanning=threading.Event();disconnecting=threading.Event();idle=threading.Event();actions=[]
+        messages=queue.Queue();release=threading.Event();scanning=threading.Event();disconnecting=threading.Event();disconnect_executed=threading.Event();idle=threading.Event();actions=[]
         class Input:
             def __iter__(self):
                 while True:
@@ -81,6 +94,7 @@ class BackendTests(unittest.TestCase):
                 self.assertNotIn('wifi',data['busy']);idle.set()
         def command(message):
             actions.append(message['action'])
+            if message['action']=='wifi-disconnect':disconnect_executed.set()
             if message['action']=='wifi-scan':release.wait(3)
         with patch.object(b.sys,'stdin',Input()),patch.object(b.signal,'signal'),patch.object(b.ServiceEvents,'start'),patch.object(backend.prayers,'get',return_value={}),patch.object(backend,'command',side_effect=command),patch.object(backend,'emit',side_effect=emit),patch.object(b,'wallpapers',return_value=[]),patch.multiple(b,media=lambda:{},battery=lambda:{},audio=lambda:{},displays=lambda:{},wifi=lambda:{},current_wallpaper=lambda:""):
             worker=threading.Thread(target=backend.main);worker.start()
@@ -90,7 +104,7 @@ class BackendTests(unittest.TestCase):
                 messages.put(json.dumps({'action':'wifi-disconnect','value':'wlan0'}))
                 # The main loop consumes the queued click while scan is still running.
                 b.time.sleep(.12)
-                release.set();self.assertTrue(disconnecting.wait(2));self.assertTrue(idle.wait(2))
+                release.set();self.assertTrue(disconnecting.wait(2));self.assertTrue(disconnect_executed.wait(2));self.assertTrue(idle.wait(2))
                 self.assertEqual(actions,['wifi-scan','wifi-disconnect'])
             finally:
                 release.set();messages.put(None);worker.join(3)

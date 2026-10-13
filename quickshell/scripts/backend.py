@@ -49,6 +49,10 @@ def settings_load():
         if isinstance(saved, dict):
             for key, value in saved.items():
                 if key in DEFAULTS and type(value) is type(DEFAULTS[key]): result[key] = value
+            if 'barTheme' not in saved:
+                result['barTheme'] = 'workspace' if result['notch'] else 'apple'
+            if result['barTheme'] not in ('workspace', 'apple'):
+                result['barTheme'] = DEFAULTS['barTheme']
     except (OSError, ValueError): pass
     return result
 
@@ -320,11 +324,11 @@ class Backend:
         if action=='page':services.update(page_services.get(str(message.get('value','')),()))
         return services
     @staticmethod
-    def poll_intervals(audio_connected=False, desktop_connected=False, notch=False, page=''):
+    def poll_intervals(audio_connected=False, desktop_connected=False, workspace_theme=False, page=''):
         """Return the service polling cadence for the current event profile."""
         intervals={'media':1,'battery':15,'audio':30 if audio_connected else 1,
                    'display':2,'wifi':5,'prayers':60}
-        if notch:intervals['desktop']=30 if desktop_connected else .5
+        if workspace_theme:intervals['desktop']=30 if desktop_connected else .5
         if page in ('control','bluetooth','settings'):intervals['bluetooth']=8
         if page=='clipboard':intervals['clipboard']=2
         return intervals
@@ -411,6 +415,7 @@ class Backend:
         if a=='setting':
             if v not in DEFAULTS:raise ValueError('Unknown setting')
             if type(extra) is not type(DEFAULTS[v]):raise ValueError('Invalid setting value')
+            if v=='barTheme' and extra not in ('workspace', 'apple'):raise ValueError('Invalid bar theme')
             old_wallpaper_key=self.wallpaper_settings_key(self.settings)
             staged=copy.deepcopy(self.settings)
             staged[v]=extra
@@ -694,7 +699,7 @@ class Backend:
                     if was_metadata_full:
                         display_metadata_dirty=True;dirty.add('display')
                     if key not in dirty:data[key]={}
-            intervals=self.poll_intervals(self.events.connected('audio'),self.events.connected('desktop'),self.settings['notch'],self.page)
+            intervals=self.poll_intervals(self.events.connected('audio'),self.events.connected('desktop'),self.settings['barTheme']=='workspace',self.page)
             sources={'media':media,'battery':battery,'audio':audio,'display':displays,'wifi':wifi,
                      'desktop':desktop,'bluetooth':bluetooth,'clipboard':clipboard_history}
             prayer_settings=dict(self.settings)

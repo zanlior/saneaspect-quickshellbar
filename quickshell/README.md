@@ -1,6 +1,6 @@
 # Island — Quickshell for CachyOS / Hyprland
 
-A dynamic desktop bar built with Quickshell and QML, inspired by the saneAspect desktop design. Island offers Dock and Notch layouts with expandable media, system, calendar and prayer panels. Wallpapers and album artwork come from your own files and media players.
+A dynamic desktop bar built with Quickshell and QML, inspired by the saneAspect desktop design. Island offers Workspace and Dock bar themes, each with floating and Notch modes, plus expandable media, system, calendar and prayer panels. Wallpapers and album artwork come from your own files and media players.
 
 ## Start
 
@@ -133,7 +133,7 @@ Fonts can be changed in Settings → Appearance. Both the Display card and its m
 
 When the status circle is disabled, control and connection panels expand from the centered clock. When the album circle is disabled, the music panel expands from the clock. Settings can be closed with Super+C and reopened with Super+comma.
 
-Bar styles: **Super+Alt+T** opens the Dock/Notch selector. Search, arrow keys, click, or Enter select a style and save it. Notch combines workspace indicators, clock, network signal at the top center; click its clock for the expanded overview, then the music card or network indicator for the existing centered controls. Dock retains the existing layout.
+Bar themes: **Super+Alt+T** opens the Workspace and Dock theme selector. Search, arrow keys, click, or Enter to choose a theme. Workspace shows workspace indicators, a clock, network signal, and a wide clock overview; Dock shows a clock with separate media and Wi-Fi circles and a compact clock preview. Settings → Bar & Island has a separate Notch mode switch that attaches either theme to the top edge without changing its design.
 
 ## Prayer widget
 

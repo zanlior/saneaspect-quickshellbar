@@ -1,6 +1,7 @@
 .pragma library
 var values = {
   "notch": false,
+  "barTheme": "apple",
   "barHeight": 33,
   "collapsedWidth": 96,
   "expandedHeight": 125,

@@ -11,15 +11,15 @@ Item {
     signal selectedByClick()
     signal appliedByClick()
     width: theme ? 190 : 152
-    height: theme ? 122 : 106
+    height: bar ? 92 : theme ? 122 : 106
     RoundedPanel {
         id: body
         anchors.horizontalCenter: parent.horizontalCenter
-        y: root.selected ? 0 : root.theme ? 8 : 4
+        y: root.bar ? 0 : root.selected ? 0 : root.theme ? 8 : 4
         width: root.theme ? 190 : root.selected ? 152 : 140
-        height: root.theme ? 102 : root.selected ? 90 : 82
+        height: root.bar ? 92 : root.theme ? 102 : root.selected ? 90 : 82
         radius: root.theme ? 14 : 11
-        color: root.bar ? Style.panel : root.theme ? root.entry === 'ariadne' ? '#061310' : (Style.palettes[root.entry] || Style.palettes.ariadne)[1] : Style.card
+        color: root.bar ? Style.card : root.theme ? root.entry === 'ariadne' ? '#061310' : (Style.palettes[root.entry] || Style.palettes.ariadne)[1] : Style.card
         Behavior on y { NumberAnimation { duration: Style.settings.reduceMotion ? 0 : Style.settings.hover; easing.type: Easing.OutCubic } }
         Behavior on width { NumberAnimation { duration: Style.settings.reduceMotion ? 0 : Style.settings.hover; easing.type: Easing.OutCubic } }
         Behavior on height { NumberAnimation { duration: Style.settings.reduceMotion ? 0 : Style.settings.hover; easing.type: Easing.OutCubic } }
@@ -45,22 +45,42 @@ Item {
         }
         Rectangle {
             visible: root.bar
-            x: 14; y: 10; width: parent.width - 28; height: 57
-            radius: 8; color: Style.card
-            Rectangle {
+            x: 12; y: 10; width: parent.width - 24; height: 48
+            radius: 8; color: Style.panel
+            Row {
+                visible: root.entry === 'Workspace'
+                anchors.centerIn: parent
+                spacing: 15
+                Row {
+                    anchors.verticalCenter: parent.verticalCenter
+                    spacing: 3
+                    Repeater {
+                        model: 5
+                        Rectangle {
+                            required property int index
+                            width: 4; height: index === 1 ? 11 : 6
+                            radius: 2
+                            color: Style.accent
+                            opacity: index === 1 ? 1 : .55
+                        }
+                    }
+                }
+                Label { text: '12:30'; font.pixelSize: 12 }
+                Icon { name: 'wifi'; width: 13; height: 13; color: Style.accent }
+            }
+            Row {
                 visible: root.entry === 'Dock'
-                anchors.horizontalCenter: parent.horizontalCenter
-                y: 9; width: 46; height: 16; radius: 8; color: Style.bg
-            }
-            NotchBackground {
-                visible: root.entry === 'Notch'
-                anchors.horizontalCenter: parent.horizontalCenter
-                width: 94; height: 21; color: Style.bg; cornerRadius: 8
-            }
-            Label {
-                anchors.horizontalCenter: parent.horizontalCenter
-                y: root.entry === 'Dock' ? 10 : 2
-                text: '12:30'; font.pixelSize: 9
+                anchors.centerIn: parent
+                spacing: 8
+                Rectangle { width: 18; height: 18; radius: 9; color: Style.bg }
+                Rectangle {
+                    width: 58; height: 20; radius: 10; color: Style.bg
+                    Label { anchors.centerIn: parent; text: '12:30'; font.pixelSize: 9 }
+                }
+                Rectangle {
+                    width: 18; height: 18; radius: 9; color: Style.bg
+                    Icon { anchors.centerIn: parent; name: 'wifi'; width: 11; height: 11; color: Style.accent }
+                }
             }
         }
         Label {

@@ -14,7 +14,12 @@ Item {
     property bool switchingPanels: false
     readonly property bool geometryAnimating: sideRevealAnimation.running || mediaRevealAnimation.running || mainWidthAnimation.running || mainHeightAnimation.running
     property bool stageHovered: false
-    readonly property real collapsedBarWidth: Style.settings.notch && !Style.settings.gameMode ? Math.max(240, Style.settings.collapsedWidth) : Style.settings.collapsedWidth
+    readonly property bool workspaceTheme: Style.settings.barTheme === 'workspace'
+    // Space between the center dock and its floating music and Wi-Fi circles.
+    readonly property real dockCircleGap: 20
+    // Extra space on each side of the Dock theme only when attached as a notch.
+    readonly property real dockNotchSidePadding: 16
+    readonly property real collapsedBarWidth: !Style.settings.notch || Style.settings.gameMode ? Style.settings.collapsedWidth : workspaceTheme ? Math.max(240, Style.settings.collapsedWidth) : Style.settings.collapsedWidth + dockNotchSidePadding * 2
     readonly property bool notchHovered: Style.settings.notch && !Style.settings.gameMode && stageHovered && !expanded && visualPage === '' && !bridge.toast && !osd
     onStageHoveredChanged: {
         if (Style.settings.notch && !expanded && visualPage === '' && !bridge.toast && !osd) {
@@ -77,8 +82,8 @@ Item {
     readonly property bool visualConnectionOverlay: visualPage === "wifi" || visualPage === "bluetooth"
     // The notch body starts inside the curved shoulders on both sides.
     readonly property real notchMenuSidePadding: Style.settings.notch && !Style.settings.gameMode ? 12 : 0
-    readonly property int panelWidth: page === "glance" ? (Style.settings.notch ? 670 : 272) : page === "prayers" ? Math.min(960, root.width - 24) : page === "calendar" ? 360 : page === "media" ? 412 : page === "bars" ? 470 : page === "themes" || page === "wallpapers" ? 860 : page === "launcher" ? Style.settings.launcherWidth : ["control", "wifi", "bluetooth", "sound", "display"].includes(page) ? 514 : 550
-    readonly property int panelHeight: page === "glance" ? (Style.settings.notch ? Math.max(138, Style.settings.expandedHeight) : Style.settings.expandedHeight) : page === "prayers" ? Math.min(420, (root.width - 24) * 420 / 960) : page === "calendar" ? 300 : page === "media" ? 214 : page === "power" ? 130 : page === "themes" || page === "bars" ? 235 : page === "wallpapers" ? 200 : page === "launcher" ? 88 + Style.settings.rowHeight * Style.settings.launcherRows : page === "sound" ? Math.min(720, Math.max(300, soundSheet.implicitHeight + 44)) : page === "display" ? Math.min(680, displaySheet.implicitHeight + 44) : page === "control" || connectionOverlay ? Math.min(680, Math.max(420, controlContent.contentHeight + 28)) : Math.max(600, 400 + Style.settings.historyHeight)
+    readonly property int panelWidth: page === "glance" ? (workspaceTheme ? 670 : 272) : page === "prayers" ? Math.min(960, root.width - 24) : page === "calendar" ? 360 : page === "media" ? 412 : page === "bars" ? 470 : page === "themes" || page === "wallpapers" ? 860 : page === "launcher" ? Style.settings.launcherWidth : ["control", "wifi", "bluetooth", "sound", "display"].includes(page) ? 514 : 550
+    readonly property int panelHeight: page === "glance" ? (workspaceTheme ? Math.max(138, Style.settings.expandedHeight) : Style.settings.expandedHeight) : page === "prayers" ? Math.min(420, (root.width - 24) * 420 / 960) : page === "calendar" ? 300 : page === "media" ? 214 : page === "power" ? 130 : page === "themes" || page === "bars" ? 235 : page === "wallpapers" ? 200 : page === "launcher" ? 88 + Style.settings.rowHeight * Style.settings.launcherRows : page === "sound" ? Math.min(720, Math.max(300, soundSheet.implicitHeight + 44)) : page === "display" ? Math.min(680, displaySheet.implicitHeight + 44) : page === "control" || connectionOverlay ? Math.min(680, Math.max(420, controlContent.contentHeight + 28)) : Math.max(600, 400 + Style.settings.historyHeight)
     // Keep the Wayland buffer stable while the island animates inside it.
     readonly property int surfaceHeight: Style.settings.edgeGap + Math.max(Style.settings.gameHeight + 8, Style.settings.expandedHeight, 720, 400 + Style.settings.historyHeight, 88 + Style.settings.rowHeight * Style.settings.launcherRows) + 130
     readonly property var hitArea: mediaTransition ? mediaPopup : sideTransition ? sidePopup : main
@@ -87,10 +92,10 @@ Item {
     property alias clockHit: separateClock
     property alias gameHit: gameBar
     property alias errorHit: errorBox
-    readonly property bool sidePanel: ["control", "wifi", "bluetooth", "sound", "display"].indexOf(page) >= 0 && !Style.settings.gameMode && Style.settings.statusCircle && !Style.settings.notch
-    readonly property bool mediaPanel: page === "media" && !Style.settings.gameMode && Style.settings.albumCircle && !Style.settings.notch
-    readonly property bool visualSidePanel: ["control", "wifi", "bluetooth", "sound", "display"].includes(visualPage) && !Style.settings.gameMode && Style.settings.statusCircle && !Style.settings.notch
-    readonly property bool visualMediaPanel: visualPage === "media" && !Style.settings.gameMode && Style.settings.albumCircle && !Style.settings.notch
+    readonly property bool sidePanel: ["control", "wifi", "bluetooth", "sound", "display"].indexOf(page) >= 0 && !Style.settings.gameMode && Style.settings.statusCircle && !Style.settings.notch && !workspaceTheme
+    readonly property bool mediaPanel: page === "media" && !Style.settings.gameMode && Style.settings.albumCircle && !Style.settings.notch && !workspaceTheme
+    readonly property bool visualSidePanel: ["control", "wifi", "bluetooth", "sound", "display"].includes(visualPage) && !Style.settings.gameMode && Style.settings.statusCircle && !Style.settings.notch && !workspaceTheme
+    readonly property bool visualMediaPanel: visualPage === "media" && !Style.settings.gameMode && Style.settings.albumCircle && !Style.settings.notch && !workspaceTheme
     readonly property bool sideTransition: sidePanel || sidePopup.reveal > 0 || visualSidePanel
     readonly property bool mediaTransition: mediaPanel || mediaPopup.reveal > 0 || visualMediaPanel
     signal settingsRequested
@@ -110,7 +115,7 @@ Item {
                 setting('theme', item.modelData);
                 requestPage('wallpapers');
             } else if (page === 'bars') {
-                setting('notch', item.modelData === 'Notch');
+                setting('barTheme', item.modelData === 'Workspace' ? 'workspace' : 'apple');
                 requestPage('');
             } else
                 send('wallpaper', item.modelData);
@@ -204,7 +209,7 @@ Item {
         if (page === 'themes' || page === 'wallpapers' || page === 'bars')
             Qt.callLater(() => {
                 if (page === 'bars') themeSearch.text = '';
-                carousel.currentIndex = Math.max(0, carousel.model.indexOf(page === 'bars' ? (Style.settings.notch ? 'Notch' : 'Dock') : page === 'themes' ? Style.settings.theme : (bridge.state.wallpaperSelected || '')));
+                carousel.currentIndex = Math.max(0, carousel.model.indexOf(page === 'bars' ? (root.workspaceTheme ? 'Workspace' : 'Dock') : page === 'themes' ? Style.settings.theme : (bridge.state.wallpaperSelected || '')));
                 if (page === 'themes' || page === 'bars') themeSearch.forceActiveFocus();
                 else expandedContent.forceActiveFocus();
             });
@@ -255,13 +260,13 @@ Item {
     Rectangle {
         id: mediaCircle
         objectName: 'media-circle'
-        visible: !Style.settings.notch && Style.settings.albumCircle && !!root.media.title && !Style.settings.gameMode && !root.mediaTransition
+        visible: !root.workspaceTheme && Style.settings.albumCircle && !!root.media.title && !Style.settings.gameMode && !root.mediaTransition
         width: Style.settings.barHeight
         height: width
         antialiasing: true
         radius: width / 2
         color: Style.bg
-        x: root.sideTransition ? root.width / 2 - Style.settings.collapsedWidth / 2 - width - 20 : main.x - width - 20
+        x: root.sideTransition ? root.width / 2 - Style.settings.collapsedWidth / 2 - width - root.dockCircleGap : main.x - width - root.dockCircleGap
         y: Math.max(0, Style.settings.edgeGap - (mediaMouse.containsMouse ? Style.settings.hoverLift : 0))
         Behavior on y { NumberAnimation { duration: Style.settings.reduceMotion ? 0 : Style.settings.hover; easing.type: Easing.BezierSpline; easing.bezierCurve: Style.settleCurve } }
         RoundedImage {
@@ -290,13 +295,13 @@ Item {
     Rectangle {
         id: statusCircle
         objectName: 'status-circle'
-        visible: !Style.settings.notch && Style.settings.statusCircle && !Style.settings.gameMode && !root.sideTransition
+        visible: !root.workspaceTheme && Style.settings.statusCircle && !Style.settings.gameMode && !root.sideTransition
         width: Style.settings.barHeight
         height: width
         antialiasing: true
         radius: width / 2
         color: Style.bg
-        x: root.mediaTransition ? root.width / 2 + Style.settings.collapsedWidth / 2 + 20 : main.x + main.width + 20
+        x: root.mediaTransition ? root.width / 2 + Style.settings.collapsedWidth / 2 + root.dockCircleGap : main.x + main.width + root.dockCircleGap
         y: Math.max(0, Style.settings.edgeGap - (statusMouse.containsMouse ? Style.settings.hoverLift : 0))
         Behavior on y { NumberAnimation { duration: Style.settings.reduceMotion ? 0 : Style.settings.hover; easing.type: Easing.BezierSpline; easing.bezierCurve: Style.settleCurve } }
         WifiBadge { anchors.fill: parent }
@@ -364,7 +369,7 @@ Item {
                 }
             }
         }
-        x: root.width / 2 + Style.settings.collapsedWidth / 2 + 20
+        x: root.width / 2 + Style.settings.collapsedWidth / 2 + root.dockCircleGap
         y: Style.settings.edgeGap
         width: Style.settings.barHeight + (Math.min(openWidth, root.width - x - 8) - Style.settings.barHeight) * reveal
         height: Style.settings.barHeight + (openHeight - Style.settings.barHeight) * reveal
@@ -398,7 +403,7 @@ Item {
         id: mediaPopup
         objectName: 'media-popup'
         property real reveal: root.mediaPanel ? 1 : 0
-        readonly property real corner: root.width / 2 - Style.settings.collapsedWidth / 2 - 20
+        readonly property real corner: root.width / 2 - Style.settings.collapsedWidth / 2 - root.dockCircleGap
         x: Math.max(8, corner - width)
         y: Style.settings.edgeGap
         width: Style.settings.barHeight + (Math.min(412, Math.max(Style.settings.barHeight, corner - 8)) - Style.settings.barHeight) * reveal
@@ -450,7 +455,7 @@ Item {
         visible: !root.mediaTransition && !root.sideTransition && (!Style.settings.gameMode || root.expanded || root.visualPage !== '' || !!bridge.toast || !!root.osd)
         x: (root.width - width) / 2
         y: Style.settings.notch ? 0 : Style.settings.gameMode ? Style.settings.gameHeight + 8 : Math.max(0, Style.settings.edgeGap - (root.stageHovered ? Style.settings.hoverLift : 0))
-        width: Math.min(root.width - 16, root.expanded && !root.mediaPanel && !root.sidePanel ? root.panelWidth + root.notchMenuSidePadding * 2 : bridge.toast ? Style.settings.notificationWidth : root.osd ? 300 : Math.max(root.collapsedBarWidth, Style.settings.notch ? compactContents.minimumBarWidth : 0) + (root.notchHovered ? Style.settings.hoverLift * 2 : 0))
+        width: Math.min(root.width - 16, root.expanded && !root.mediaPanel && !root.sidePanel ? root.panelWidth + root.notchMenuSidePadding * 2 : bridge.toast ? Style.settings.notificationWidth : root.osd ? 300 : Math.max(root.collapsedBarWidth, root.workspaceTheme ? compactContents.minimumBarWidth : 0) + (root.notchHovered ? Style.settings.hoverLift * 2 : 0))
         height: root.expanded ? root.panelHeight : bridge.toast ? 74 : root.osd ? 46 : Style.settings.barHeight + (root.notchHovered ? Style.settings.hoverLift : 0)
         radius: root.expanded ? Style.settings.expandedRadius : Style.settings.radius
         color: Style.settings.notch && !Style.settings.gameMode ? 'transparent' : root.page === 'media' ? '#000000' : Style.bg
@@ -502,7 +507,7 @@ Item {
             visible: root.visualPage === ''
             ClockLabel {
                 anchors.centerIn: parent
-                visible: !Style.settings.notch && !bridge.toast && !root.osd
+                visible: !root.workspaceTheme && !bridge.toast && !root.osd
                 text: Qt.formatDateTime(root.now, Style.clockFormat)
             }
             RowLayout {
@@ -559,7 +564,7 @@ Item {
                 objectName: 'notch-compact'
                 anchors.fill: parent
                 anchors.leftMargin: 24; anchors.rightMargin: 24
-                visible: Style.settings.notch && !bridge.toast && !root.osd
+                visible: root.workspaceTheme && !bridge.toast && !root.osd
                 z: 1
                 bridge: root.bridge
                 now: root.now
@@ -620,7 +625,7 @@ Item {
             Item {
                 id: glancePreview
                 objectName: 'clock-preview'
-                visible: root.visualPage === 'glance' && !Style.settings.notch
+                visible: root.visualPage === 'glance' && !root.workspaceTheme
                 anchors.fill: parent
                 Rectangle {
                     objectName: 'clock-preview-highlight'
@@ -685,7 +690,7 @@ Item {
             }
             NotchContents {
                 objectName: 'notch-expanded'
-                visible: root.visualPage === 'glance' && Style.settings.notch
+                visible: root.visualPage === 'glance' && root.workspaceTheme
                 anchors.fill: parent
                 bridge: root.bridge
                 now: root.now
@@ -942,7 +947,7 @@ Item {
                     SelectorSearch {
                         id: themeSearch
                         objectName: 'theme-search'
-                        placeholderText: selector.bars ? 'Search bars…' : 'Search themes…'
+                        placeholderText: selector.bars ? 'Search bar themes…' : 'Search themes…'
                         visible: selector.theme
                         Layout.fillWidth: true
                         onPrevious: carousel.decrementCurrentIndex()
@@ -977,7 +982,7 @@ Item {
                     highlightMoveDuration: Style.duration
                     spacing: selector.theme ? 12 : 14
                     clip: true
-                    model: selector.theme ? (selector.bars ? ['Dock', 'Notch'] : Object.keys(Style.palettes).sort()).filter(t => t.toLowerCase().includes(themeSearch.text.toLowerCase())) : (bridge.state.wallpapers || [])
+                    model: selector.theme ? (selector.bars ? ['Workspace', 'Dock'] : Object.keys(Style.palettes).sort()).filter(t => t.toLowerCase().includes(themeSearch.text.toLowerCase())) : (bridge.state.wallpapers || [])
                     onModelChanged: if (root.page === 'bars') Qt.callLater(() => { carousel.contentX = 0; }); else if (root.page === 'wallpapers') Qt.callLater(() => {
                         if (root.page === 'wallpapers') carousel.currentIndex = Math.max(0, carousel.model.indexOf(root.appliedWallpaper));
                     })
@@ -989,7 +994,7 @@ Item {
                         theme: selector.theme
                         bar: selector.bars
                         selected: ListView.isCurrentItem
-                        applied: selector.bars ? modelData === (Style.settings.notch ? 'Notch' : 'Dock') : selector.theme ? modelData === Style.settings.theme : modelData === root.appliedWallpaper
+                        applied: selector.bars ? modelData === (root.workspaceTheme ? 'Workspace' : 'Dock') : selector.theme ? modelData === Style.settings.theme : modelData === root.appliedWallpaper
                         onSelectedByClick: {
                             carousel.currentIndex = index;
                             if (selector.theme) root.applyChoice();
@@ -999,7 +1004,7 @@ Item {
                     Label {
                         anchors.centerIn: parent
                         visible: carousel.count === 0
-                        text: selector.theme ? (selector.bars ? 'No bars found' : 'No themes found') : 'Add images to ' + Style.settings.wallpaperFolder
+                        text: selector.theme ? (selector.bars ? 'No bar themes found' : 'No themes found') : 'Add images to ' + Style.settings.wallpaperFolder
                         color: Style.muted
                         font.pixelSize: 12
                     }

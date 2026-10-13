@@ -1,6 +1,6 @@
 # saneAspect Quickshell Bar
 
-Island is a dynamic desktop bar for Hyprland, built with Quickshell and QML. It brings media, notifications, system controls, themes and prayer times into expandable panels, with a choice of **Dock** and **Notch** layouts.
+Island is a dynamic desktop bar for Hyprland, built with Quickshell and QML. It brings media, notifications, system controls, themes and prayer times into expandable panels. Choose a **Workspace** or **Dock** bar design, then use either as a floating bar or a screen-edge **Notch**.
 
 This repository includes the shell, Hyprland keybindings, autostart modules and theme integration. Island is an independent implementation inspired by the saneAspect desktop design.
 
@@ -9,7 +9,7 @@ This repository includes the shell, Hyprland keybindings, autostart modules and 
 - **Media controls:** artwork, playback and seeking for individual MPRIS players; swipe between cards or use arrow keys. Opening the panel selects the most recently active player. Individual browser tabs are supported through the optional mprisence bridge.
 - **Control center:** Wi-Fi, Bluetooth, audio devices, per-app volume, brightness, night light and display settings. Display changes revert automatically unless confirmed.
 - **Desktop tools:** application launcher, notifications and history, calendar, clipboard shortcuts, lock screen and power menu.
-- **Appearance:** Dock and Notch layouts, 21 theme palettes, wallpaper selection and adjustable fonts, sizing and animations. Themes update Island, GTK, Kitty and Hyprland borders.
+- **Appearance:** Workspace and Dock bar themes, an independent Notch mode, 21 color palettes, wallpaper selection and adjustable fonts, sizing and animations. Palettes update Island, GTK, Kitty and Hyprland borders.
 - **Prayer times:** daily timetable, Hijri date, next-prayer countdown, reminders and optional azan playback from local MP3 collections.
 - **Customization:** persistent settings and a control-center layout editor with drag, resize, undo and reset.
 
@@ -56,7 +56,7 @@ See the [feature dependency table](quickshell/README.md#dependencies-by-feature)
 | Super + Z | Prayer times |
 | Super + T | Themes |
 | Super + Shift + T | Wallpapers |
-| Super + Alt + T | Dock / Notch selector |
+| Super + Alt + T | Workspace / Dock bar theme selector |
 | Super + comma | Settings |
 | Super + R | Show or hide the bar |
 | Super + L | Lock screen |

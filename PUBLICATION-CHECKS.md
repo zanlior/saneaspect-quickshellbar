@@ -52,9 +52,9 @@ reference autostart formatting are preserved.
 
 The final commit is checked against the sanitized package for identical file
 contents and executable modes. Commit author and committer metadata use a
-GitHub noreply identity. Commits are local; nothing has been uploaded. The
-intended repository's existing history must be inspected before proposing a
-push, and pushing requires separate approval.
+GitHub noreply identity. This report describes the initial reconstructed
+history before publication; later feature commits and pushes are separate from
+these stage checks.
 
 Limits: pattern scans cannot establish the absence of every kind of private
 information. Automated checks use mocks and offscreen rendering; they do not

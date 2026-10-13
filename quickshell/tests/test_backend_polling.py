@@ -98,9 +98,13 @@ def wait_for(predicate, timeout=2):
 
 
 class BackendPollingTests(unittest.TestCase):
+    def test_workspace_polling_follows_theme(self):
+        self.assertNotIn('desktop', b.Backend.poll_intervals(workspace_theme=False))
+        self.assertIn('desktop', b.Backend.poll_intervals(workspace_theme=True))
+
     def test_connected_profiles_slow_only_audio_and_desktop_polling(self):
-        connected = b.Backend.poll_intervals(audio_connected=True, desktop_connected=True, notch=True, page='')
-        fallback = b.Backend.poll_intervals(audio_connected=False, desktop_connected=False, notch=True, page='')
+        connected = b.Backend.poll_intervals(audio_connected=True, desktop_connected=True, workspace_theme=True, page='')
+        fallback = b.Backend.poll_intervals(audio_connected=False, desktop_connected=False, workspace_theme=True, page='')
         self.assertEqual(connected['audio'], 30)
         self.assertEqual(connected['desktop'], 30)
         self.assertEqual(fallback['audio'], 1)
@@ -120,7 +124,7 @@ class BackendPollingTests(unittest.TestCase):
 
     def test_connected_audio_refreshes_on_event_and_unchanged_data_is_suppressed(self):
         backend = b.Backend()
-        backend.settings['notch'] = True
+        backend.settings['barTheme'] = 'workspace'
         events = FakeEvents({'audio': True, 'desktop': True})
         audio_calls = []
         desktop_calls = []
@@ -154,7 +158,7 @@ class BackendPollingTests(unittest.TestCase):
 
     def test_disconnected_audio_keeps_one_second_fallback_freshness(self):
         backend = b.Backend()
-        backend.settings['notch'] = True
+        backend.settings['barTheme'] = 'workspace'
         events = FakeEvents({'audio': False, 'desktop': False})
         calls = []
         desktop_calls = []
