@@ -76,6 +76,12 @@ RoundedPanel {
         settle.to = -direction * pageDistance;
         settle.start();
     }
+    function togglePlayback() {
+        if (!menuOpen || !media.id || swipe.pressed || settling) return;
+        finishOpeningRefresh();
+        selectedPlayer = media.id;
+        bridge.send('media', 'play-pause', media.id);
+    }
     function returnToCurrent() {
         pendingPlayer = '';
         settle.to = 0;
@@ -83,6 +89,11 @@ RoundedPanel {
     }
     Keys.onLeftPressed: switchPlayer(-1)
     Keys.onRightPressed: switchPlayer(1)
+    Keys.onPressed: event => {
+        if (event.key !== Qt.Key_Space) return;
+        event.accepted = true;
+        if (!event.isAutoRepeat) togglePlayback();
+    }
     antialiasing: true
     radius: 24
     color: Style.panel

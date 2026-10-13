@@ -37,6 +37,8 @@ Item {
     readonly property bool night: !!bridge.state.nightActive
     property int monthOffset: 0
     property string powerConfirm: ""
+    property int powerIndex: 0
+    readonly property var powerActions: [['lock', 'Lock', 'lock'], ['suspend', 'Suspend', 'suspend'], ['logout', 'Log Out', 'logout'], ['reboot', 'Reboot', 'reboot'], ['poweroff', 'Power Off', 'poweroff']]
     property var pairing: bridge.state.pairing || null
     readonly property string appliedWallpaper: bridge.state.wallpaperSelected || ''
     onAppliedWallpaperChanged: {
@@ -162,6 +164,32 @@ Item {
         requestPage('');
         send('lock');
     }
+    function focusMediaCard() {
+        if (page !== 'media') return;
+        Qt.callLater(() => {
+            if (root.page !== 'media') return;
+            (root.mediaPanel ? sideMediaCard : inlineMediaCard).forceActiveFocus();
+        });
+    }
+    onMediaPanelChanged: focusMediaCard()
+    function movePowerSelection(direction) {
+        if (page !== 'power') return;
+        powerIndex = (powerIndex + direction + powerActions.length) % powerActions.length;
+        powerConfirm = '';
+    }
+    function activatePower(index) {
+        if (page !== 'power' || index < 0 || index >= powerActions.length) return;
+        powerIndex = index;
+        const action = powerActions[index][2];
+        if (action === 'lock') {
+            lockSession();
+        } else if (powerConfirm === action) {
+            send('power', action);
+            requestPage('');
+        } else {
+            powerConfirm = action;
+        }
+    }
     Timer {
         id: switchWait
         interval: 16
@@ -204,6 +232,7 @@ Item {
             if (Style.settings.reduceMotion || Style.duration === 0) visualPage = '';
         }
         powerConfirm = '';
+        if (page === 'power') powerIndex = 0;
         if (expanded) stageHovered = false;
         send('page', page);
         if (page === 'themes' || page === 'wallpapers' || page === 'bars')
@@ -217,6 +246,10 @@ Item {
             Qt.callLater(() => clipboardPanel.focusSearch());
         if (page === 'launcher')
             Qt.callLater(() => launcherPanel.focusSearch());
+        if (page === 'media') focusMediaCard();
+        if (page === 'power') Qt.callLater(() => {
+            if (root.page === 'power') expandedContent.forceActiveFocus();
+        });
     }
     onCurrentOutputChanged: {
         if (lastVolume >= 0 && currentOutput.volume !== lastVolume)
@@ -434,6 +467,7 @@ Item {
                 opacity: 1 - mediaPopup.reveal
             }
             MediaCard {
+                id: sideMediaCard
                 objectName: 'media-card'
                 menuOpen: root.mediaPanel
                 anchors.right: parent.right
@@ -616,12 +650,32 @@ Item {
             }
             focus: root.expanded
             Keys.onEscapePressed: root.requestPage('')
-            Keys.onLeftPressed: if (['themes', 'wallpapers', 'bars'].includes(root.page))
-                carousel.decrementCurrentIndex()
-            Keys.onRightPressed: if (['themes', 'wallpapers', 'bars'].includes(root.page))
-                carousel.incrementCurrentIndex()
-            Keys.onReturnPressed: if (['themes', 'wallpapers', 'bars'].includes(root.page))
-                root.applyChoice()
+            Keys.onLeftPressed: {
+                if (root.page === 'power') root.movePowerSelection(-1);
+                else if (['themes', 'wallpapers', 'bars'].includes(root.page)) carousel.decrementCurrentIndex();
+            }
+            Keys.onRightPressed: {
+                if (root.page === 'power') root.movePowerSelection(1);
+                else if (['themes', 'wallpapers', 'bars'].includes(root.page)) carousel.incrementCurrentIndex();
+            }
+            Keys.onReturnPressed: event => {
+                if (root.page === 'power') {
+                    if (!event.isAutoRepeat) root.activatePower(root.powerIndex);
+                } else if (['themes', 'wallpapers', 'bars'].includes(root.page)) root.applyChoice();
+            }
+            Keys.onEnterPressed: event => {
+                if (root.page === 'power' && !event.isAutoRepeat) root.activatePower(root.powerIndex);
+            }
+            Keys.onPressed: event => {
+                if (root.page !== 'power') return;
+                if (event.key === Qt.Key_Up) {
+                    root.movePowerSelection(-1);
+                    event.accepted = true;
+                } else if (event.key === Qt.Key_Down) {
+                    root.movePowerSelection(1);
+                    event.accepted = true;
+                }
+            }
             Item {
                 id: glancePreview
                 objectName: 'clock-preview'
@@ -777,6 +831,7 @@ Item {
                 onSettingsRequested: root.settingsRequested()
             }
             MediaCard {
+                id: inlineMediaCard
                 objectName: 'media-game-card'
                 menuOpen: root.page === 'media' && !root.mediaPanel
                 visible: root.visualPage === 'media' && !root.visualMediaPanel
@@ -891,14 +946,17 @@ Item {
                 anchors.fill: parent
                 spacing: 8
                 Repeater {
-                    model: [['lock', 'Lock', 'lock'], ['suspend', 'Suspend', 'suspend'], ['logout', 'Log Out', 'logout'], ['reboot', 'Reboot', 'reboot'], ['poweroff', 'Power Off', 'poweroff']]
+                    model: root.powerActions
                     Rectangle {
+                        required property int index
                         required property var modelData
                         objectName: 'power-' + modelData[2]
                         Layout.fillWidth: true
                         Layout.fillHeight: true
                         radius: 22
-                        color: powerMouse.containsMouse ? Style.accent : Style.panel
+                        color: powerMouse.containsMouse || root.powerIndex === index ? Style.accent : Style.panel
+                        border.width: root.powerIndex === index ? 2 : 0
+                        border.color: Style.text
                         Column {
                             anchors.centerIn: parent
                             spacing: 9
@@ -907,13 +965,13 @@ Item {
                                 anchors.horizontalCenter: parent.horizontalCenter
                                 name: modelData[0]
                                 width: 20; height: 20
-                                color: powerMouse.containsMouse ? Style.bg : Style.text
+                                color: powerMouse.containsMouse || root.powerIndex === index ? Style.bg : Style.text
                             }
                             Label {
                                 anchors.horizontalCenter: parent.horizontalCenter
                                 text: root.powerConfirm === modelData[2] ? 'Confirm?' : modelData[1]
                                 font.pixelSize: 12
-                                color: powerMouse.containsMouse ? Style.bg : Style.text
+                                color: powerMouse.containsMouse || root.powerIndex === index ? Style.bg : Style.text
                             }
                         }
                         MouseArea {
@@ -921,14 +979,7 @@ Item {
                             anchors.fill: parent
                             hoverEnabled: true
                             onClicked: {
-                                if (modelData[2] === 'lock') {
-                                    root.lockSession();
-                                } else if (root.powerConfirm === modelData[2]) {
-                                    root.send('power', modelData[2]);
-                                    root.page = '';
-                                    root.powerConfirm = '';
-                                } else
-                                    root.powerConfirm = modelData[2];
+                                root.activatePower(index);
                             }
                         }
                     }

@@ -19,12 +19,12 @@ The wallpaper picker requires a running `awww-daemon` or `swww-daemon`. Put your
 ## Interaction
 
 - Hover the clock, media circle or Wi-Fi circle for a small lift; hover keeps panels closed. Click the clock to toggle the small date preview. Click the preview to open prayer times; Shift-click the preview for the full month calendar. Shift-click the bar clock to open prayer times directly.
-- Click the album circle for media, or the Wi-Fi circle for the control center. When several players are open, hold and drag the artwork or track details left/right to reveal the adjacent player card alongside the current card. Release to settle on that player, or drag back to keep the current one. The slide settles over 420 ms. Each opening starts with the most recently started or resumed audio, with the others available by swiping. The dots show the selected player; transport and seeking control that player. Left/Right arrow keys also switch players.
+- Click the album circle for media, or the Wi-Fi circle for the control center. When several players are open, hold and drag the artwork or track details left/right to reveal the adjacent player card alongside the current card. Release to settle on that player, or drag back to keep the current one. The slide settles over 420 ms. Each opening starts with the most recently started or resumed audio, with the others available by swiping. The dots show the selected player; transport and seeking control that player. Left/Right arrow keys switch players, and Space toggles playback for the displayed card. See [keyboard controls](docs/keyboard-controls.md) for media and power-menu shortcuts.
 - Right-click the clock/status circle for settings. Middle-click the clock for apps.
 - Scroll over the clock to change volume. Volume and brightness changes show an OSD.
 - Click the control center's lock button to lock immediately. Super + L locks this desktop; Super + M or Alt + L toggles the separate power menu.
 - Escape or click outside an expanded panel to close it.
-- Power actions require a second click. Display changes automatically revert after 15 seconds unless kept.
+- In the power menu, use arrow keys to select an action and Enter to activate it. Lock runs immediately; other actions require a second distinct Enter press or click. Display changes automatically revert after 15 seconds unless kept.
 - Settings save immediately under `~/.config/island-shell/settings.json`.
 
 ## Hyprland integration
